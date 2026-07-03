@@ -39,20 +39,16 @@ export class ServicesService {
     const filter: any = {
     status: ServiceStatus.ACTIVE,
 };
-    if (q) filter.$text = { $search: q };
-   if (category) {
-  console.log('CATEGORY RAW:', JSON.stringify(category));
-  console.log('CATEGORY LENGTH:', category.length);
-  console.log('CATEGORY VALID:', Types.ObjectId.isValid(category));
+    if (q) {
+  filter.$text = {
+    $search: q,
+  };
+}
 
-  if (Types.ObjectId.isValid(category)) {
-    filter.categoryId = new Types.ObjectId(category);
+if (category) {
+  const normalizedCategory = category.trim();
 
-    console.log(
-      'CATEGORY OBJECT ID:',
-      filter.categoryId.toString(),
-    );
-  } else {
+  if (!Types.ObjectId.isValid(normalizedCategory)) {
     return {
       services: [],
       total: 0,
@@ -60,50 +56,16 @@ export class ServicesService {
       totalPages: 0,
     };
   }
+
+  filter.$expr = {
+    $eq: [
+      {
+        $toString: '$categoryId',
+      },
+      normalizedCategory,
+    ],
+  };
 }
-
-console.log('SERVICE SEARCH FILTER:', filter);
-
-const diagnosticService = await this.serviceModel
-  .findOne({ status: ServiceStatus.ACTIVE })
-  .lean();
-
-console.log(
-  'RAW SERVICE CATEGORY:',
-  diagnosticService?.categoryId,
-);
-
-console.log(
-  'RAW SERVICE CATEGORY TYPE:',
-  typeof diagnosticService?.categoryId,
-);
-
-console.log(
-  'RAW SERVICE CATEGORY CONSTRUCTOR:',
-  diagnosticService?.categoryId?.constructor?.name,
-);
-
-console.log(
-  'RAW SERVICE STATUS:',
-  diagnosticService?.status,
-);
-
-console.log(
-  'DIRECT CATEGORY COUNT:',
-  await this.serviceModel.countDocuments({
-    categoryId: new Types.ObjectId(
-      '6a382a5606f1f93136152545',
-    ),
-  }),
-);
-
-console.log(
-  'STRING CATEGORY COUNT:',
-  await this.serviceModel.countDocuments({
-    categoryId:
-      '6a382a5606f1f93136152545' as any,
-  }),
-);
 
 if (city) {
   filter['location.city'] = {

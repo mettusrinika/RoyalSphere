@@ -30,17 +30,7 @@ function ServicesContent() {
   const {
   data: servicesData,
   isLoading,
-} = useServices({
-  q: filters.q,
-  category: filters.category,
-  city: filters.city,
-  minPrice: filters.minPrice,
-  maxPrice: filters.maxPrice,
-  rating: filters.rating,
-  sort: filters.sort,
-  page: filters.page,
-  limit: filters.limit,
-});
+} = useServices(filters);
 
 const data = servicesData as {
   services: any[];
@@ -203,4 +193,5 @@ export default function ServicesPage() {
     </Suspense>
   );
 }
+
 
