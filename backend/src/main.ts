@@ -34,28 +34,48 @@ async function bootstrap() {
   // CORS
   // ============================
 
-  app.enableCors({
-    origin:
-      process.env.FRONTEND_URL ??
+   app.enableCors({
+  origin: (
+    origin,
+    callback,
+  ) => {
+    const allowedOrigins = [
       'http://localhost:3000',
+      process.env.FRONTEND_URL,
+    ].filter(Boolean);
 
-    credentials: true,
+    if (
+      !origin ||
+      allowedOrigins.includes(origin)
+    ) {
+      callback(null, true);
+      return;
+    }
 
-    methods: [
-      'GET',
-      'POST',
-      'PUT',
-      'PATCH',
-      'DELETE',
-      'OPTIONS',
-    ],
+    callback(
+      new Error(
+        `CORS blocked origin: ${origin}`,
+      ),
+    );
+  },
 
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'x-refresh-token',
-    ],
-  });
+  credentials: true,
+
+  methods: [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+  ],
+
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'x-refresh-token',
+  ],
+});
 
   // ============================
   // Prefix
