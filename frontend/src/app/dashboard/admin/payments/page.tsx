@@ -25,7 +25,7 @@ export default function AdminPaymentsPage() {
   const [page, setPage] = useState(1);
   const { data, isLoading } = useQuery({
     queryKey: ['admin-payments', page],
-    queryFn: () => paymentsApi.getAdminPayments({ page, limit: 20 }).then(r => r.data),
+    queryFn: () => paymentsApi.getAdminPayments({ page, limit: 20 }).then(r => r.data?.data ?? r.data),
   });
 
   return (
@@ -142,3 +142,4 @@ export default function AdminPaymentsPage() {
     </DashboardLayout>
   );
 }
+

@@ -27,7 +27,7 @@ export default function AdminBookingsPage() {
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-bookings', status, page],
-    queryFn: () => bookingsApi.getAllBookings({ status, page, limit: 20 }).then(r => r.data),
+    queryFn: () => bookingsApi.getAllBookings({ status, page, limit: 20 }).then(r => r.data?.data ?? r.data),
   });
 
   const statuses = ['', 'pending', 'accepted', 'in_progress', 'completed', 'cancelled', 'rejected'];
@@ -117,3 +117,4 @@ export default function AdminBookingsPage() {
     </DashboardLayout>
   );
 }
+
