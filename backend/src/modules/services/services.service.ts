@@ -63,7 +63,54 @@ export class ServicesService {
 }
 
 console.log('SERVICE SEARCH FILTER:', filter);
-    if (city) filter['location.city'] = { $regex: city, $options: 'i' };
+
+const diagnosticService = await this.serviceModel
+  .findOne({ status: ServiceStatus.ACTIVE })
+  .lean();
+
+console.log(
+  'RAW SERVICE CATEGORY:',
+  diagnosticService?.categoryId,
+);
+
+console.log(
+  'RAW SERVICE CATEGORY TYPE:',
+  typeof diagnosticService?.categoryId,
+);
+
+console.log(
+  'RAW SERVICE CATEGORY CONSTRUCTOR:',
+  diagnosticService?.categoryId?.constructor?.name,
+);
+
+console.log(
+  'RAW SERVICE STATUS:',
+  diagnosticService?.status,
+);
+
+console.log(
+  'DIRECT CATEGORY COUNT:',
+  await this.serviceModel.countDocuments({
+    categoryId: new Types.ObjectId(
+      '6a382a5606f1f93136152545',
+    ),
+  }),
+);
+
+console.log(
+  'STRING CATEGORY COUNT:',
+  await this.serviceModel.countDocuments({
+    categoryId:
+      '6a382a5606f1f93136152545' as any,
+  }),
+);
+
+if (city) {
+  filter['location.city'] = {
+    $regex: city,
+    $options: 'i',
+  };
+}
     if (minPrice || maxPrice) {
       filter.basePrice = {};
       if (minPrice) filter.basePrice.$gte = +minPrice;
