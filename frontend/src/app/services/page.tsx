@@ -30,7 +30,17 @@ function ServicesContent() {
   const {
   data: servicesData,
   isLoading,
-} = useServices(filters);
+} = useServices({
+  q: filters.q,
+  category: filters.category,
+  city: filters.city,
+  minPrice: filters.minPrice,
+  maxPrice: filters.maxPrice,
+  rating: filters.rating,
+  sort: filters.sort,
+  page: filters.page,
+  limit: filters.limit,
+});
 
 const data = servicesData as {
   services: any[];
