@@ -41,8 +41,17 @@ export class ServicesService {
 };
     if (q) filter.$text = { $search: q };
    if (category) {
+  console.log('CATEGORY RAW:', JSON.stringify(category));
+  console.log('CATEGORY LENGTH:', category.length);
+  console.log('CATEGORY VALID:', Types.ObjectId.isValid(category));
+
   if (Types.ObjectId.isValid(category)) {
     filter.categoryId = new Types.ObjectId(category);
+
+    console.log(
+      'CATEGORY OBJECT ID:',
+      filter.categoryId.toString(),
+    );
   } else {
     return {
       services: [],
@@ -52,6 +61,8 @@ export class ServicesService {
     };
   }
 }
+
+console.log('SERVICE SEARCH FILTER:', filter);
     if (city) filter['location.city'] = { $regex: city, $options: 'i' };
     if (minPrice || maxPrice) {
       filter.basePrice = {};
