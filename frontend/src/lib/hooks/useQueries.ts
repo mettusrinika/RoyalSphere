@@ -355,7 +355,7 @@ export function useBudgetPlanner() {
 
 // ── Users (admin) ─────────────────────────────────────────────────────────
 export function useAllUsers(params?: any) {
-  return useQuery({ queryKey: ['users', params], queryFn: () => usersApi.getAllUsers(params).then(r => r.data) });
+  return useQuery({ queryKey: ['users', params], queryFn: () => usersApi.getAllUsers(params).then(r => r.data?.data ?? r.data) });
 }
 export function useSavedServices() {
   return useQuery({
@@ -382,3 +382,4 @@ export function useToggleSaved() {
     },
   });
 }
+
