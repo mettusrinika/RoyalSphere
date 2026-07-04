@@ -1,149 +1,927 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --rs-bg: #020817;
+  --rs-bg-secondary: #061226;
+  --rs-surface: #0B1B34;
+
+  --rs-glass: rgba(9, 25, 50, 0.72);
+  --rs-glass-strong: rgba(11, 27, 52, 0.9);
+
+  --rs-gold: #C9A227;
+  --rs-gold-light: #E2C15A;
+  --rs-champagne: #F4E3A1;
+
+  --rs-white: #F8FAFC;
+  --rs-soft: #CBD5E1;
+  --rs-muted: #94A3B8;
+
+  --rs-border: rgba(201, 162, 39, 0.24);
+}
+
 @layer base {
-  * { box-sizing: border-box; }
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background-color: #000B1F;
-    color: #FFFFFF;
-    -webkit-font-smoothing: antialiased;
+  * {
+    box-sizing: border-box;
   }
-  h1, h2, h3 { font-family: 'Inter', sans-serif; }
+
+  html {
+    background: var(--rs-bg);
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    background:
+      radial-gradient(
+        circle at 85% 8%,
+        rgba(22, 50, 92, 0.28),
+        transparent 28%
+      ),
+      var(--rs-bg);
+
+    color: var(--rs-white);
+
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: 'Inter', sans-serif;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-royal-blue text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-royal-navy transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-royal-blue/40 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply px-6 py-2.5 rounded-xl font-semibold transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed;
+
+    color: #020817;
+
+    background:
+      linear-gradient(
+        135deg,
+        #A8841F 0%,
+        #C9A227 48%,
+        #E2C15A 100%
+      );
+
+    border: 1px solid rgba(244, 227, 161, 0.28);
+
+    box-shadow:
+      0 8px 26px rgba(0, 0, 0, 0.28),
+      0 0 20px rgba(201, 162, 39, 0.08);
   }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+      0 12px 34px rgba(0, 0, 0, 0.38),
+      0 0 24px rgba(201, 162, 39, 0.16);
+  }
+
   .btn-gold {
-    @apply bg-royal-gold text-royal-blue px-6 py-2.5 rounded-lg font-semibold hover:bg-gold-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-royal-gold/40 disabled:opacity-50;
+    @apply px-6 py-2.5 rounded-xl font-semibold transition-all duration-200 disabled:opacity-50;
+
+    color: #020817;
+
+    background:
+      linear-gradient(
+        135deg,
+        #A8841F,
+        #C9A227 50%,
+        #E2C15A
+      );
+
+    border: 1px solid rgba(244, 227, 161, 0.24);
   }
+
   .btn-outline {
-    @apply border-2 border-royal-blue text-royal-blue px-6 py-2.5 rounded-lg font-semibold hover:bg-royal-blue hover:text-white transition-all duration-200;
+    @apply px-6 py-2.5 rounded-xl font-semibold transition-all duration-200;
+
+    color: var(--rs-gold-light);
+
+    border: 1px solid rgba(201, 162, 39, 0.48);
+
+    background: rgba(255, 255, 255, 0.02);
   }
+
+  .btn-outline:hover {
+    color: var(--rs-champagne);
+
+    background: rgba(201, 162, 39, 0.08);
+
+    border-color: rgba(226, 193, 90, 0.72);
+  }
+
   .card {
-    @apply bg-[#06152E] text-white rounded-2xl shadow-card border border-royal-gold/30 p-6;
+    @apply rounded-2xl p-6;
+
+    color: var(--rs-white);
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(11, 27, 52, 0.86),
+        rgba(6, 18, 38, 0.78)
+      );
+
+    border: 1px solid var(--rs-border);
+
+    box-shadow:
+      0 18px 50px rgba(0, 0, 0, 0.26);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
   }
+
   .card-hover {
-    @apply card hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 cursor-pointer;
+    @apply card transition-all duration-300 cursor-pointer;
   }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+
+    border-color: rgba(226, 193, 90, 0.44);
+
+    box-shadow:
+      0 24px 60px rgba(0, 0, 0, 0.38),
+      0 0 26px rgba(201, 162, 39, 0.08);
+  }
+
   .input {
-    @apply w-full px-4 py-2.5 rounded-xl border border-royal-gold/30 bg-[#06152E] text-white placeholder-muted focus:outline-none focus:ring-2 focus:ring-royal-blue/30 focus:border-royal-blue transition-all duration-150;
+    @apply w-full px-4 py-2.5 rounded-xl transition-all duration-150;
+
+    color: var(--rs-white);
+
+    background: rgba(6, 18, 38, 0.78);
+
+    border: 1px solid rgba(201, 162, 39, 0.3);
   }
+
+  .input::placeholder {
+    color: var(--rs-muted);
+  }
+
+  .input:focus {
+    outline: none;
+
+    border-color: rgba(226, 193, 90, 0.72);
+
+    box-shadow:
+      0 0 0 3px rgba(201, 162, 39, 0.1);
+  }
+
   .label {
-    @apply block text-sm font-medium text-foreground mb-1.5;
+    @apply block text-sm font-medium mb-1.5;
+
+    color: var(--rs-soft);
   }
+
   .badge {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
+
   .section-title {
-    @apply text-2xl font-bold text-royal-blue font-display;
+    @apply text-2xl font-bold;
+
+    color: var(--rs-white);
   }
+
   .page-title {
-    @apply text-3xl font-bold text-royal-blue;
+    @apply text-3xl font-bold;
+
+    color: var(--rs-white);
   }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #000B1F; }
-::-webkit-scrollbar-thumb { background: #D99A16; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #F2B928; }
+/* =========================================================
+   ROYAL SPHERE PREMIUM SEMANTIC COLOR REPAIR
+   ========================================================= */
 
-/* Skeleton loader */
-.skeleton {
-  background: linear-gradient(90deg, #06152E 25%, #0A1A35 50%, #06152E 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+.bg-background,
+.bg-royal-navy {
+  background-color: var(--rs-bg);
 }
 
+.bg-royal-blue {
+  background-color: var(--rs-surface);
+  color: var(--rs-white);
+}
 
-/* Royal Sphere premium metallic identity */
+.text-royal-blue {
+  color: var(--rs-white);
+}
+
+.text-royal-navy {
+  color: #020817;
+}
+
+.text-royal-gold {
+  color: var(--rs-gold);
+}
+
+.text-gold-300,
+.text-gold-500 {
+  color: var(--rs-gold-light);
+}
+
+.text-muted {
+  color: var(--rs-muted);
+}
+
+/* Light surfaces */
+
+.bg-white,
+.bg-gold-50,
+.bg-gold-100,
+.bg-royal-50,
+.bg-royal-100,
+.bg-royal-200 {
+  color: #020817;
+}
+
+.bg-white h1,
+.bg-white h2,
+.bg-white h3,
+.bg-white h4,
+.bg-white h5,
+.bg-white h6,
+.bg-gold-50 h1,
+.bg-gold-50 h2,
+.bg-gold-50 h3,
+.bg-gold-100 h1,
+.bg-gold-100 h2,
+.bg-gold-100 h3,
+.bg-royal-50 h1,
+.bg-royal-50 h2,
+.bg-royal-50 h3,
+.bg-royal-100 h1,
+.bg-royal-100 h2,
+.bg-royal-100 h3,
+.bg-royal-200 h1,
+.bg-royal-200 h2,
+.bg-royal-200 h3 {
+  color: #020817;
+}
+
+/* Form controls */
+
+input,
+textarea,
+select {
+  color: var(--rs-white);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--rs-muted);
+}
+
+select option {
+  color: var(--rs-white);
+  background: var(--rs-bg-secondary);
+}
+
+/* Navbar stays luxury navy */
+
+header,
+nav {
+  border-color: rgba(148, 163, 184, 0.12);
+}
+
+/* Premium gold typography */
+
 .royal-gold-text {
-  background: linear-gradient(105deg, #B87508 0%, #D99A16 24%, #FFE08A 48%, #F2B928 66%, #B87508 100%);
+  background:
+    linear-gradient(
+      105deg,
+      #A8841F 0%,
+      #C9A227 24%,
+      #F4E3A1 48%,
+      #E2C15A 66%,
+      #A8841F 100%
+    );
+
   background-size: 220% auto;
+
   -webkit-background-clip: text;
   background-clip: text;
+
   color: transparent;
-  text-shadow: 0 0 24px rgba(242, 185, 40, 0.12);
+
+  text-shadow:
+    0 0 24px rgba(201, 162, 39, 0.08);
 }
+
+/* Premium AI hero */
 
 .royal-hero {
   position: relative;
   overflow: hidden;
+
   border-radius: 1.5rem;
-  border: 1px solid rgba(242, 185, 40, 0.42);
+
+  color: var(--rs-white);
+
+  border: 1px solid rgba(201, 162, 39, 0.28);
+
   background:
-    radial-gradient(circle at 82% 15%, rgba(242,185,40,.12), transparent 26%),
-    radial-gradient(circle at 10% 90%, rgba(217,154,22,.08), transparent 30%),
-    linear-gradient(135deg, #000714 0%, #000B1F 45%, #061B3A 100%);
-  box-shadow: inset 0 0 45px rgba(242,185,40,.035), 0 18px 60px rgba(0,0,0,.35);
+    radial-gradient(
+      circle at 82% 15%,
+      rgba(22, 50, 92, 0.52),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 12% 88%,
+      rgba(201, 162, 39, 0.05),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #020817 0%,
+      #061226 48%,
+      #0B1B34 100%
+    );
+
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.36);
 }
 
 .royal-hero::after {
   content: '';
+
   position: absolute;
+
   inset: -120% -35%;
-  background: linear-gradient(105deg, transparent 42%, rgba(255,224,138,.10) 49%, rgba(242,185,40,.18) 50%, transparent 57%);
+
+  background:
+    linear-gradient(
+      105deg,
+      transparent 44%,
+      rgba(244, 227, 161, 0.05) 49%,
+      rgba(201, 162, 39, 0.09) 50%,
+      transparent 56%
+    );
+
   transform: rotate(8deg);
-  animation: royalSweep 7s ease-in-out infinite;
+
+  animation: royalSweep 8s ease-in-out infinite;
+
   pointer-events: none;
 }
 
 .royal-ai-card {
-  background: linear-gradient(145deg, rgba(6,21,46,.96), rgba(0,11,31,.98));
-  border: 1px solid rgba(217,154,22,.30);
+  color: var(--rs-white);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(11, 27, 52, 0.86),
+      rgba(6, 18, 38, 0.82)
+    );
+
+  border: 1px solid rgba(201, 162, 39, 0.22);
+
   border-radius: 1.25rem;
-  transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .royal-ai-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(255,224,138,.72);
-  box-shadow: 0 16px 42px rgba(0,0,0,.34), 0 0 24px rgba(242,185,40,.14);
+  transform: translateY(-5px);
+
+  border-color: rgba(226, 193, 90, 0.5);
+
+  box-shadow:
+    0 20px 54px rgba(0, 0, 0, 0.38),
+    0 0 24px rgba(201, 162, 39, 0.08);
 }
 
 .royal-icon-glow {
-  filter: drop-shadow(0 0 8px rgba(242,185,40,.38));
+  filter:
+    drop-shadow(
+      0 0 8px rgba(201, 162, 39, 0.28)
+    );
 }
 
 .royal-shimmer {
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 18px rgba(242,185,40,.22);
 }
 
 .royal-shimmer::after {
   content: '';
+
   position: absolute;
+
   top: -60%;
   bottom: -60%;
-  width: 32%;
+
+  width: 26%;
+
   left: -50%;
+
   transform: skewX(-20deg);
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.42), transparent);
-  animation: royalButtonShimmer 3.8s ease-in-out infinite;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(244, 227, 161, 0.24),
+      transparent
+    );
+
+  animation:
+    royalButtonShimmer 4.5s ease-in-out infinite;
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--rs-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #806516;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--rs-gold);
+}
+
+/* Selection */
+
+::selection {
+  background: rgba(201, 162, 39, 0.34);
+  color: var(--rs-white);
+}
+
+/* Skeleton */
+
+.skeleton {
+  background:
+    linear-gradient(
+      90deg,
+      #061226 25%,
+      #0B1B34 50%,
+      #061226 75%
+    );
+
+  background-size: 200% 100%;
+
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 @keyframes royalSweep {
-  0%, 30% { transform: translateX(-28%) rotate(8deg); opacity: 0; }
-  45% { opacity: 1; }
-  70%, 100% { transform: translateX(28%) rotate(8deg); opacity: 0; }
+  0%,
+  30% {
+    transform: translateX(-28%) rotate(8deg);
+    opacity: 0;
+  }
+
+  45% {
+    opacity: 1;
+  }
+
+  70%,
+  100% {
+    transform: translateX(28%) rotate(8deg);
+    opacity: 0;
+  }
 }
 
 @keyframes royalButtonShimmer {
-  0%, 55% { left: -50%; }
-  85%, 100% { left: 130%; }
+  0%,
+  55% {
+    left: -50%;
+  }
+
+  85%,
+  100% {
+    left: 130%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .royal-hero::after, .royal-shimmer::after { animation: none; }
-  .royal-ai-card { transition: none; }
+  .royal-hero::after,
+  .royal-shimmer::after {
+    animation: none;
+  }
+
+  .royal-ai-card {
+    transition: none;
+  }
 }
+/* =========================================================
+   ROYAL SPHERE FINAL LEGACY LIGHT-SURFACE NORMALIZATION
+   Converts old white/light Tailwind surfaces into premium glass.
+   ========================================================= */
+
+/* Legacy white application surfaces */
+
+.bg-white {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(11, 27, 52, 0.92),
+      rgba(6, 18, 38, 0.88)
+    ) !important;
+
+  color: var(--rs-white) !important;
+
+  border-color: rgba(201, 162, 39, 0.18);
+}
+
+/* Old pale Royal backgrounds */
+
+.bg-royal-50,
+.bg-royal-100,
+.bg-royal-200 {
+  background: rgba(11, 27, 52, 0.72) !important;
+  color: var(--rs-white) !important;
+}
+
+/* Old pale gold backgrounds */
+
+.bg-gold-50,
+.bg-gold-100 {
+  background: rgba(201, 162, 39, 0.08) !important;
+  color: var(--rs-gold-light) !important;
+}
+
+/* Restore readable typography inside converted surfaces */
+
+.bg-white h1,
+.bg-white h2,
+.bg-white h3,
+.bg-white h4,
+.bg-white h5,
+.bg-white h6,
+.bg-white p,
+.bg-white span,
+.bg-white label,
+.bg-white td,
+.bg-white th,
+.bg-white div {
+  color: inherit;
+}
+
+.bg-royal-50 h1,
+.bg-royal-50 h2,
+.bg-royal-50 h3,
+.bg-royal-100 h1,
+.bg-royal-100 h2,
+.bg-royal-100 h3,
+.bg-royal-200 h1,
+.bg-royal-200 h2,
+.bg-royal-200 h3 {
+  color: var(--rs-white);
+}
+
+/* Explicit old dark text repair */
+
+.text-gray-900,
+.text-slate-900,
+.text-black {
+  color: var(--rs-white) !important;
+}
+
+.text-gray-800,
+.text-slate-800 {
+  color: var(--rs-soft) !important;
+}
+
+.text-gray-700,
+.text-slate-700,
+.text-gray-600,
+.text-slate-600 {
+  color: var(--rs-muted) !important;
+}
+
+/* Soft legacy borders */
+
+.border-gray-100,
+.border-gray-200,
+.border-gray-300,
+.border-slate-100,
+.border-slate-200,
+.border-slate-300 {
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+
+/* Premium table surfaces */
+
+table {
+  color: var(--rs-white);
+}
+
+thead {
+  background: rgba(11, 27, 52, 0.94) !important;
+}
+
+tbody tr {
+  background: rgba(6, 18, 38, 0.5);
+}
+
+tbody tr:hover {
+  background: rgba(11, 27, 52, 0.78);
+}
+
+th {
+  color: var(--rs-soft) !important;
+}
+
+td {
+  color: var(--rs-white);
+}
+
+/* Premium dropdown/menu surfaces */
+
+[role="menu"],
+[role="listbox"] {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(11, 27, 52, 0.98),
+      rgba(6, 18, 38, 0.98)
+    ) !important;
+
+  color: var(--rs-white) !important;
+
+  border: 1px solid rgba(201, 162, 39, 0.2);
+
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.42);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Premium category/filter pills */
+
+.rounded-full.bg-white {
+  background: rgba(11, 27, 52, 0.82) !important;
+
+  color: var(--rs-soft) !important;
+
+  border-color: rgba(148, 163, 184, 0.18) !important;
+}
+
+.rounded-full.bg-white:hover {
+  color: var(--rs-white) !important;
+
+  border-color: rgba(201, 162, 39, 0.4) !important;
+
+  background: rgba(201, 162, 39, 0.07) !important;
+}
+
+/* Premium statistic sections */
+
+section.bg-white {
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(22, 50, 92, 0.28),
+      transparent 60%
+    ),
+    linear-gradient(
+      180deg,
+      #061226 0%,
+      #020817 100%
+    ) !important;
+
+  border-top: 1px solid rgba(201, 162, 39, 0.1);
+
+  border-bottom: 1px solid rgba(201, 162, 39, 0.1);
+}
+
+/* Notification/activity cards */
+
+.bg-gray-50,
+.bg-slate-50 {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(11, 27, 52, 0.78),
+      rgba(6, 18, 38, 0.74)
+    ) !important;
+
+  color: var(--rs-white) !important;
+}
+
+/* Header normalization */
+
+header.bg-white {
+  background: rgba(6, 18, 38, 0.94) !important;
+
+  color: var(--rs-white) !important;
+
+  border-bottom:
+    1px solid rgba(201, 162, 39, 0.12);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Remove strong browser selection blocks */
+
+::selection {
+  background: rgba(201, 162, 39, 0.18);
+  color: inherit;
+}
+
+/* Glass utility for legacy surfaces */
+
+.rs-premium-glass {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(11, 27, 52, 0.82),
+      rgba(6, 18, 38, 0.76)
+    );
+
+  border:
+    1px solid rgba(201, 162, 39, 0.18);
+
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.28);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+
+/* =========================================================
+   ROYAL SPHERE FINAL UI SURGICAL FIX
+   Fixes legacy white hover rows + profile dropdown surfaces.
+   ========================================================= */
+
+/* ---------- TABLE ROW WHITE HOVER FIX ---------- */
+
+/*
+ Tailwind legacy hover:bg-white / hover:bg-gray-* rules were
+ creating bright white rows in Admin Bookings and Payments.
+*/
+
+tbody tr:hover,
+tbody tr.hover\:bg-white:hover,
+tbody tr.hover\:bg-gray-50:hover,
+tbody tr.hover\:bg-gray-100:hover,
+tbody tr.hover\:bg-slate-50:hover,
+tbody tr.hover\:bg-slate-100:hover {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(13, 32, 61, 0.96),
+      rgba(8, 24, 48, 0.94)
+    ) !important;
+
+  color: var(--rs-white) !important;
+}
+
+/* Preserve all row text colours on hover */
+
+tbody tr:hover td {
+  background: transparent !important;
+}
+
+tbody tr:hover .text-gray-900,
+tbody tr:hover .text-slate-900,
+tbody tr:hover .text-black {
+  color: var(--rs-white) !important;
+}
+
+tbody tr:hover .text-gray-500,
+tbody tr:hover .text-gray-600,
+tbody tr:hover .text-slate-500,
+tbody tr:hover .text-slate-600 {
+  color: var(--rs-muted) !important;
+}
+
+/* Catch direct TD white hover utilities */
+
+td.hover\:bg-white:hover,
+td.hover\:bg-gray-50:hover,
+td.hover\:bg-gray-100:hover {
+  background: rgba(13, 32, 61, 0.96) !important;
+}
+
+/* ---------- PROFILE DROPDOWN FINAL FIX ---------- */
+
+/*
+ Prevent old bg-white menu children from painting white blocks.
+*/
+
+[role="menu"] {
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(13, 32, 61, 0.99),
+      rgba(5, 17, 37, 0.99)
+    ) !important;
+
+  border: 1px solid rgba(201, 162, 39, 0.22) !important;
+
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.48) !important;
+
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+
+[role="menu"] > *,
+[role="menu"] a,
+[role="menu"] button {
+  background: transparent !important;
+}
+
+[role="menu"] a,
+[role="menu"] button {
+  color: var(--rs-soft) !important;
+
+  transition:
+    background-color 160ms ease,
+    color 160ms ease !important;
+}
+
+[role="menu"] a:hover,
+[role="menu"] button:hover {
+  background: rgba(201, 162, 39, 0.08) !important;
+
+  color: var(--rs-white) !important;
+}
+
+/* Keep logout semantic red */
+
+[role="menu"] .text-red-500,
+[role="menu"] .text-red-600,
+[role="menu"] .text-red-700 {
+  color: #f87171 !important;
+}
+
+[role="menu"] .text-red-500:hover,
+[role="menu"] .text-red-600:hover,
+[role="menu"] .text-red-700:hover {
+  color: #fca5a5 !important;
+
+  background: rgba(239, 68, 68, 0.08) !important;
+}
+
+/* ---------- LEGACY HOVER WHITE GLOBAL SAFETY ---------- */
+
+.hover\:bg-white:hover {
+  background: rgba(13, 32, 61, 0.94) !important;
+}
+
+.hover\:bg-gray-50:hover,
+.hover\:bg-gray-100:hover,
+.hover\:bg-slate-50:hover,
+.hover\:bg-slate-100:hover {
+  background: rgba(13, 32, 61, 0.9) !important;
+}
+
+/* Keep text readable when old hover classes trigger */
+
+.hover\:text-gray-900:hover,
+.hover\:text-slate-900:hover,
+.hover\:text-black:hover {
+  color: var(--rs-white) !important;
+}
+
