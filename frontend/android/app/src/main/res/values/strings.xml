@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">OMIQORA</string>
+    <string name="title_activity_main">OMIQORA</string>
+    <string name="package_name">com.omiqora.app</string>
+    <string name="custom_url_scheme">com.omiqora.app</string>
+</resources>
