@@ -25,7 +25,7 @@ async function seed() {
   const Category = mongoose.models.Category || mongoose.model('Category', CategorySchema);
 
   // Seed admin
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@royalsphere.com';
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@OMIQORA.com';
   const existing = await User.findOne({ email: adminEmail });
   if (!existing) {
     const hashed = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'Admin@Royal2024', 12);

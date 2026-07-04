@@ -121,10 +121,10 @@ this.transporter = nodemailer.createTransport({
     const url = `${this.configService.get('FRONTEND_URL')}/auth/verify-email?token=${token}`;
     await this.sendEmail({
       to: email,
-      subject: 'Verify your Royal Sphere account',
+      subject: 'Verify your OMIQORA account',
       html: this.emailTemplate('Email Verification', `
         <p>Hi ${name},</p>
-        <p>Welcome to Royal Sphere! Please verify your email address to get started.</p>
+        <p>Welcome to OMIQORA! Please verify your email address to get started.</p>
         <a href="${url}" class="btn">Verify Email</a>
         <p style="color:#888;font-size:12px;">Link expires in 24 hours.</p>
       `),
@@ -135,7 +135,7 @@ this.transporter = nodemailer.createTransport({
     const url = `${this.configService.get('FRONTEND_URL')}/auth/reset-password?token=${token}`;
     await this.sendEmail({
       to: email,
-      subject: 'Reset your Royal Sphere password',
+      subject: 'Reset your OMIQORA password',
       html: this.emailTemplate('Password Reset', `
         <p>Hi ${name},</p>
         <p>You requested a password reset. Click below to set a new password.</p>
@@ -169,7 +169,7 @@ this.transporter = nodemailer.createTransport({
       subject: 'Congratulations! Your vendor application is approved',
       html: this.emailTemplate('Vendor Approved 🎉', `
         <p>Hi ${name},</p>
-        <p>Your Royal Sphere vendor application has been <strong>approved</strong>!</p>
+        <p>Your OMIQORA vendor application has been <strong>approved</strong>!</p>
         <p>You can now list your services, manage bookings, and start growing your business.</p>
         <a href="${this.configService.get('FRONTEND_URL')}/dashboard/vendor" class="btn">Go to Vendor Dashboard</a>
       `),
@@ -179,7 +179,7 @@ this.transporter = nodemailer.createTransport({
   async sendVendorRejection(email: string, name: string, reason: string) {
     await this.sendEmail({
       to: email,
-      subject: 'Update on your Royal Sphere vendor application',
+      subject: 'Update on your OMIQORA vendor application',
       html: this.emailTemplate('Application Update', `
         <p>Hi ${name},</p>
         <p>After review, we were unable to approve your vendor application at this time.</p>
@@ -263,14 +263,14 @@ private async sendEmail(options: {
 <body>
 <div class="wrapper">
   <div class="header">
-    <h1>Royal Sphere</h1>
+    <h1>OMIQORA</h1>
     <p>AI-powered Services Ecosystem</p>
   </div>
   <div class="body">
     <h2>${title}</h2>
     ${body}
   </div>
-  <div class="footer">© ${new Date().getFullYear()} Royal Sphere. All rights reserved.</div>
+  <div class="footer">© ${new Date().getFullYear()} OMIQORA. All rights reserved.</div>
 </div>
 </body>
 </html>`;

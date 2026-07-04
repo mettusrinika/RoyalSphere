@@ -46,8 +46,8 @@ export class CreateReviewDto {
   @ApiPropertyOptional({
     type: [String],
     example: [
-      'https://cdn.royalsphere.com/reviews/image1.jpg',
-      'https://cdn.royalsphere.com/reviews/image2.jpg',
+      'https://cdn.OMIQORA.com/reviews/image1.jpg',
+      'https://cdn.OMIQORA.com/reviews/image2.jpg',
     ],
   })
   @IsOptional()

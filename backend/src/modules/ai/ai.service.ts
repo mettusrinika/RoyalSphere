@@ -1949,9 +1949,9 @@ async recommendPackage(
   async supportAssistant(message: string) {
     const text = String(message || '').toLowerCase();
     let intent = 'general';
-    let answer = 'I can help with services, bookings, payments, vendor applications, reviews, and account guidance on Royal Sphere.';
+    let answer = 'I can help with services, bookings, payments, vendor applications, reviews, and account guidance on OMIQORA.';
     if (/book|booking/.test(text)) { intent = 'booking'; answer = 'Open a service, review its details, choose the booking option, provide event details, and follow the booking status from your dashboard.'; }
-    else if (/pay|payment|refund/.test(text)) { intent = 'payment'; answer = 'Open the relevant booking or Payments section to check payment status. For failed or refunded transactions, use the recorded transaction details and status shown in Royal Sphere.'; }
+    else if (/pay|payment|refund/.test(text)) { intent = 'payment'; answer = 'Open the relevant booking or Payments section to check payment status. For failed or refunded transactions, use the recorded transaction details and status shown in OMIQORA.'; }
     else if (/vendor|application|approve/.test(text)) { intent = 'vendor'; answer = 'Use Join as Vendor to submit your application. After admin approval, vendor dashboard access and vendor workflows become available.'; }
     else if (/service|find|search|photograph|cater|decor/.test(text)) { intent = 'discovery'; answer = 'Use Find Services or Intelligent Search to filter services by category, city, price, and rating.'; }
     else if (/review|rating/.test(text)) { intent = 'review'; answer = 'Verified review workflows are linked to completed service experiences and are managed through the customer review area.'; }
@@ -1986,7 +1986,7 @@ async recommendPackage(
     const analytics = await this.getSmartAnalytics();
     const fallback = analytics.insights.join(' ');
     const insight = await this.generateGeminiInsight(
-      `You are Royal Sphere's AI strategy analyst. Based only on this real platform JSON, give a concise 3-sentence operational brief. Do not invent numbers. JSON: ${JSON.stringify(analytics.metrics)}`,
+      `You are OMIQORA's AI strategy analyst. Based only on this real platform JSON, give a concise 3-sentence operational brief. Do not invent numbers. JSON: ${JSON.stringify(analytics.metrics)}`,
       fallback,
     );
     return { ...analytics, aiInsight: insight };
@@ -2000,7 +2000,7 @@ async recommendPackage(
     ]);
     const fallback = `Performance score is ${performance.score}/100. Overall customer sentiment is ${sentiment.overall}. Revenue forecast confidence is ${revenue.confidence}.`;
     const aiInsight = await this.generateGeminiInsight(
-      `Act as a vendor growth analyst for Royal Sphere. Use only the supplied data. Give 3 short actionable recommendations and do not invent metrics. DATA: ${JSON.stringify({ performance, sentiment, revenue })}`,
+      `Act as a vendor growth analyst for OMIQORA. Use only the supplied data. Give 3 short actionable recommendations and do not invent metrics. DATA: ${JSON.stringify({ performance, sentiment, revenue })}`,
       fallback,
     );
     return { performance, sentiment, revenue, aiInsight };
@@ -2009,7 +2009,7 @@ async recommendPackage(
   async supportAssistantAI(message: string) {
     const fallback = await this.supportAssistant(message);
     const answer = await this.generateGeminiInsight(
-      `You are Royal Sphere AI Support. Royal Sphere is an AI-powered services ecosystem for discovering, comparing, booking and managing trusted services. Answer the user's question briefly and helpfully. Never invent booking, payment, vendor, refund, or account status. If live account data is required, tell the user to check the relevant dashboard. User: ${String(message || '').slice(0, 1500)}`,
+      `You are OMIQORA AI Support. OMIQORA is an AI-powered services ecosystem for discovering, comparing, booking and managing trusted services. Answer the user's question briefly and helpfully. Never invent booking, payment, vendor, refund, or account status. If live account data is required, tell the user to check the relevant dashboard. User: ${String(message || '').slice(0, 1500)}`,
       fallback.answer,
     );
     return { intent: fallback.intent, answer, source: answer === fallback.answer ? fallback.source : 'gemini' };

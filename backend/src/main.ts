@@ -117,7 +117,7 @@ async function bootstrap() {
   ) {
     const config =
       new DocumentBuilder()
-        .setTitle('Royal Sphere API')
+        .setTitle('OMIQORA API')
         .setDescription(
           'AI-powered Services Ecosystem',
         )
@@ -144,7 +144,7 @@ async function bootstrap() {
   await app.listen(port);
 
   console.log(
-    `🚀 Royal Sphere API running on http://localhost:${port}/api/v1`,
+    `🚀 OMIQORA API running on http://localhost:${port}/api/v1`,
   );
 
   console.log(

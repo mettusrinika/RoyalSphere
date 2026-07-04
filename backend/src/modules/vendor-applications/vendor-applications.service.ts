@@ -588,7 +588,7 @@ export class VendorApplicationsService {
           '🎉 Vendor Application Approved!',
 
         message:
-          'Congratulations! Your Royal Sphere vendor application has been approved. Start listing your services now.',
+          'Congratulations! Your OMIQORA vendor application has been approved. Start listing your services now.',
 
         type:
           NotificationType.VENDOR_APPROVED,

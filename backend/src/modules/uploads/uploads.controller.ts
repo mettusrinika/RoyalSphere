@@ -95,7 +95,7 @@ async uploadAvatar(
 ) {
   return this.uploadsService.uploadImage(
     file,
-    'royalsphere/avatars',
+    'OMIQORA/avatars',
   );
 }
 
@@ -119,7 +119,7 @@ async uploadServiceImage(
 ) {
   return this.uploadsService.uploadImage(
     file,
-    'royalsphere/services',
+    'OMIQORA/services',
   );
 }
 @Post('service-images')
@@ -160,7 +160,7 @@ async uploadServiceImages(
 ) {
   return this.uploadsService.uploadMultipleImages(
     files,
-    'royalsphere/services',
+    'OMIQORA/services',
   );
 }
   // =====================================================
@@ -180,7 +180,7 @@ async uploadServiceImages(
   ) {
     return this.uploadsService.uploadImage(
       file,
-      'royalsphere/reviews',
+      'OMIQORA/reviews',
     );
   }
 
@@ -222,7 +222,7 @@ async uploadServiceImages(
   ) {
     return this.uploadsService.uploadImage(
       file,
-      'royalsphere/vendor-documents',
+      'OMIQORA/vendor-documents',
     );
   }
 

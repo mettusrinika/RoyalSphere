@@ -1,7 +1,7 @@
 {
-  "name": "royal-sphere-backend",
+  "name": "omiqora-backend",
   "version": "1.0.0",
-  "description": "Royal Sphere – AI-powered Services Ecosystem Backend",
+  "description": "OMIQORA – AI-powered Services Ecosystem Backend",
   "scripts": {
     "build": "nest build",
     "start": "node dist/main",

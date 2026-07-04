@@ -53,7 +53,7 @@ export default function AIAdvantagePage() {
         <section className="max-w-6xl mx-auto px-4">
           <div className="royal-hero p-8 md:p-12">
             <div className="relative z-10">
-              <p className="text-royal-bright font-semibold tracking-[0.22em] text-sm flex items-center gap-2"><Cpu size={17}/> ROYAL SPHERE INTELLIGENCE</p>
+              <p className="text-royal-bright font-semibold tracking-[0.22em] text-sm flex items-center gap-2"><Cpu size={17}/> OMIQORA INTELLIGENCE</p>
               <h1 className="royal-gold-text text-4xl md:text-6xl font-bold mt-3">AI Advantage</h1>
               <p className="text-muted mt-4 max-w-3xl">Smarter decisions, better experiences and greater outcomes across the OMIQORA ecosystem.</p>
               <Link href="/ai/budget-planner" className="btn-gold inline-flex mt-7 royal-shimmer">Open Budget Planner</Link>
