@@ -220,4 +220,16 @@ export const aiApi = {
   getVendorRecommendations: (params: any) => api.get('/ai/recommendations/vendors', { params }),
   getServiceRecommendations: (limit = 8) => api.get(`/ai/recommendations/services?limit=${limit}`),
   budgetPlanner: (data: any) => api.post('/ai/budget-planner', data),
+  getAIHealth: () => api.get('/ai/health'),
+  getVendorPerformance: (vendorId: string) => api.get(`/ai/vendor-performance/${vendorId}`),
+  getSentiment: (vendorId: string) => api.get(`/ai/sentiment/${vendorId}`),
+  getRevenueForecast: (vendorId: string) => api.get(`/ai/revenue-forecast/${vendorId}`),
+  getDemandForecast: () => api.get('/ai/demand-forecast'),
+  getFraudDetection: () => api.get('/ai/fraud-detection'),
+  moderateContent: (text: string) => api.post('/ai/moderate', { text }),
+  getSmartAnalytics: () => api.get('/ai/smart-analytics'),
+  getExecutiveBrief: () => api.get('/ai/executive-brief'),
+  getVendorBrief: (vendorId: string) => api.get(`/ai/vendor-brief/${vendorId}`),
+  supportAI: (message: string) => api.post('/ai/support-ai', { message }),
+
 };

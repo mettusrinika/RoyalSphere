@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { AIProviderFactory } from './providers/provider.factory';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
@@ -9,6 +10,7 @@ import { Service, ServiceDocument } from '../services/schemas/service.schema';
 import { Booking, BookingDocument } from '../bookings/schemas/booking.schema';
 import { User, UserDocument } from '../users/schemas/user.schema';
 import { Review, ReviewDocument } from '../reviews/schemas/review.schema';
+import { Payment, PaymentDocument } from '../payments/schemas/payment.schema';
 import {
   Category,
   CategoryDocument,
@@ -17,6 +19,7 @@ import {
 @Injectable()
 export class AiService {
   constructor(
+    private readonly aiProviderFactory: AIProviderFactory,
     @InjectModel(Service.name)
     private readonly serviceModel: Model<ServiceDocument>,
 
@@ -28,6 +31,9 @@ export class AiService {
 
     @InjectModel(Review.name)
     private readonly reviewModel: Model<ReviewDocument>,
+
+    @InjectModel(Payment.name)
+    private readonly paymentModel: Model<PaymentDocument>,
     @InjectModel(Category.name)
 private readonly categoryModel: Model<CategoryDocument>,
   ) {}
@@ -1792,4 +1798,222 @@ async recommendPackage(
   };
 }
 
+
+
+  // =========================================================================
+  // AI ADVANTAGE - DATA-DRIVEN MVP INTELLIGENCE
+  // =========================================================================
+
+  async getVendorPerformanceScore(vendorId: string) {
+    const vendorObjId = new Types.ObjectId(vendorId);
+    const [services, bookings, reviews] = await Promise.all([
+      this.serviceModel.find({ vendorId: vendorObjId, status: 'active' }).lean(),
+      this.bookingModel.find({ vendorId: vendorObjId }).lean(),
+      this.reviewModel.find({ vendorId: vendorObjId, status: 'approved' }).lean(),
+    ]);
+
+    const completed = bookings.filter((b: any) => b.status === 'completed').length;
+    const avgRating = reviews.length
+      ? reviews.reduce((sum: number, r: any) => sum + Number(r.rating || 0), 0) / reviews.length
+      : 0;
+    const views = services.reduce((sum: number, s: any) => sum + Number(s.viewCount || 0), 0);
+    const conversion = bookings.length ? completed / bookings.length : 0;
+    const score = Math.min(100, Math.round(
+      avgRating * 12 + Math.min(completed * 4, 20) +
+      Math.min(reviews.length * 2, 10) + Math.min(views / 25, 5) + conversion * 5
+    ));
+
+    return { vendorId, score, metrics: { activeServices: services.length, totalBookings: bookings.length, completedBookings: completed, averageRating: Number(avgRating.toFixed(2)), reviewCount: reviews.length, totalViews: views, conversionRate: Number((conversion * 100).toFixed(2)) } };
+  }
+
+  async getCustomerSentiment(vendorId: string) {
+    const reviews = await this.reviewModel.find({
+      vendorId: new Types.ObjectId(vendorId),
+      status: 'approved',
+    }).lean();
+
+    const positive = ['excellent','amazing','great','good','professional','love','best','happy','perfect','recommend','quality'];
+    const negative = ['bad','poor','late','worst','terrible','rude','delay','disappointed','issue','problem','awful'];
+    const analysed = reviews.map((review: any) => {
+      const text = String(review.comment || '').toLowerCase();
+      const lexical = positive.filter(w => text.includes(w)).length - negative.filter(w => text.includes(w)).length;
+      const ratingSignal = Number(review.rating || 3) - 3;
+      const value = lexical + ratingSignal;
+      return { reviewId: review._id, sentiment: value > 0 ? 'positive' : value < 0 ? 'negative' : 'neutral', score: value };
+    });
+    const summary = analysed.reduce((a: any, x: any) => { a[x.sentiment]++; return a; }, { positive: 0, neutral: 0, negative: 0 });
+    const overall = summary.positive > summary.negative ? 'positive' : summary.negative > summary.positive ? 'negative' : 'neutral';
+    return { vendorId, overall, totalReviews: reviews.length, summary, analysed };
+  }
+
+  async getRevenueForecast(vendorId: string) {
+    const since = new Date();
+    since.setMonth(since.getMonth() - 6);
+    const payments: any[] = await this.paymentModel.find({
+      vendorId: new Types.ObjectId(vendorId),
+      status: 'paid',
+      createdAt: { $gte: since },
+    } as any).lean();
+
+    const monthly = new Map();
+    for (const p of payments) {
+      const d = new Date((p as any).createdAt);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      monthly.set(key, (monthly.get(key) || 0) + Number(p.vendorPayoutAmount || 0));
+    }
+    const history = [...monthly.entries()].sort(([a],[b]) => a.localeCompare(b)).map(([month, revenue]) => ({ month, revenue }));
+    const values = history.map(x => Number(x.revenue));
+    const recent = values.slice(-3);
+    const baseline = recent.length ? recent.reduce((a,b) => a+b, 0) / recent.length : 0;
+    const trend = recent.length > 1 ? (recent[recent.length - 1] - recent[0]) / (recent.length - 1) : 0;
+    const forecast = [1,2,3].map(i => ({ monthAhead: i, projectedRevenue: Math.max(0, Math.round(baseline + trend * i)) }));
+    return { vendorId, basis: 'paid_vendor_payout_history', history, forecast, confidence: payments.length >= 6 ? 'medium' : 'low' };
+  }
+
+  async getDemandForecast() {
+    const since = new Date();
+    since.setMonth(since.getMonth() - 6);
+    const rows = await this.bookingModel.aggregate([
+      { $match: { createdAt: { $gte: since } } },
+      { $lookup: { from: 'services', localField: 'serviceId', foreignField: '_id', as: 'service' } },
+      { $unwind: '$service' },
+      { $lookup: { from: 'categories', localField: 'service.categoryId', foreignField: '_id', as: 'category' } },
+      { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+      { $group: { _id: { categoryId: '$service.categoryId', month: { $dateToString: { format: '%Y-%m', date: '$createdAt' } } }, category: { $first: '$category.name' }, demand: { $sum: 1 } } },
+      { $sort: { '_id.month': 1 } },
+    ]);
+    const grouped = new Map();
+    for (const r of rows) {
+      const key = String(r._id.categoryId);
+      if (!grouped.has(key)) grouped.set(key, { categoryId: key, category: r.category || 'Unknown', history: [] });
+      grouped.get(key).history.push({ month: r._id.month, demand: r.demand });
+    }
+    return [...grouped.values()].map((x: any) => {
+      const v = x.history.map((h: any) => h.demand);
+      const change = v.length > 1 ? v[v.length - 1] - v[v.length - 2] : 0;
+      return { ...x, trend: change > 0 ? 'rising' : change < 0 ? 'declining' : 'stable', nextPeriodEstimate: Math.max(0, (v[v.length - 1] || 0) + change) };
+    });
+  }
+
+  async getFraudDetection() {
+    const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const payments: any[] = await this.paymentModel.find({ createdAt: { $gte: since } } as any).lean();
+    const byCustomer = new Map();
+    for (const p of payments) {
+      const key = String(p.customerId);
+      if (!byCustomer.has(key)) byCustomer.set(key, []);
+      byCustomer.get(key).push(p);
+    }
+    const alerts: any[] = [];
+    for (const [customerId, rows] of byCustomer.entries()) {
+      const failed = rows.filter((p: any) => p.status === 'failed').length;
+      const refunded = rows.filter((p: any) => p.status === 'refunded').length;
+      const highValue = rows.filter((p: any) => Number(p.amount || 0) >= 100000).length;
+      let riskScore = Math.min(100, failed * 15 + refunded * 20 + highValue * 10);
+      if (riskScore >= 30) alerts.push({ customerId, riskScore, signals: { failedPayments: failed, refunds: refunded, highValuePayments: highValue } });
+    }
+    return { windowDays: 30, analysedPayments: payments.length, flagged: alerts.length, alerts: alerts.sort((a,b) => b.riskScore - a.riskScore) };
+  }
+
+  async moderateContent(text: string) {
+    const value = String(text || '').trim();
+    const lower = value.toLowerCase();
+    const abusive = ['idiot','stupid','hate','kill','scam'];
+    const spamPatterns = [/(https?:\/\/\S+\s*){3,}/i, /(.)\1{9,}/, /\b(buy now|click here|limited offer)\b/i];
+    const reasons: string[] = [];
+    if (abusive.some(w => lower.includes(w))) reasons.push('potentially_abusive_language');
+    if (spamPatterns.some(p => p.test(value))) reasons.push('spam_or_promotional_pattern');
+    if (value.length > 2000) reasons.push('excessive_length');
+    return { allowed: reasons.length === 0, action: reasons.length ? 'review' : 'allow', reasons };
+  }
+
+  async getSmartAnalytics() {
+    const [users, vendors, services, bookings, paid, reviews] = await Promise.all([
+      this.userModel.countDocuments({ role: { $ne: 'admin' } }),
+      this.userModel.countDocuments({ role: 'vendor', isVendorApproved: true }),
+      this.serviceModel.countDocuments({ status: 'active' }),
+      this.bookingModel.countDocuments(),
+      this.paymentModel.countDocuments({ status: 'paid' }),
+      this.reviewModel.countDocuments({ status: 'approved' }),
+    ]);
+    const completed = await this.bookingModel.countDocuments({ status: 'completed' });
+    const insights: string[] = [];
+    if (services === 0) insights.push('No active services are available; service supply is the immediate platform constraint.');
+    if (vendors > 0 && services / vendors < 2) insights.push('Average active service coverage per approved vendor is below two.');
+    if (bookings > 0 && completed / bookings < 0.5) insights.push('Less than half of recorded bookings are completed; booking lifecycle conversion needs attention.');
+    if (bookings > 0 && paid / bookings < 0.5) insights.push('Paid-payment conversion is below 50% of recorded bookings.');
+    if (!insights.length) insights.push('Current platform indicators do not show a critical threshold alert.');
+    return { metrics: { users, approvedVendors: vendors, activeServices: services, bookings, paidPayments: paid, approvedReviews: reviews, completedBookings: completed }, insights, generatedAt: new Date().toISOString() };
+  }
+
+  async supportAssistant(message: string) {
+    const text = String(message || '').toLowerCase();
+    let intent = 'general';
+    let answer = 'I can help with services, bookings, payments, vendor applications, reviews, and account guidance on Royal Sphere.';
+    if (/book|booking/.test(text)) { intent = 'booking'; answer = 'Open a service, review its details, choose the booking option, provide event details, and follow the booking status from your dashboard.'; }
+    else if (/pay|payment|refund/.test(text)) { intent = 'payment'; answer = 'Open the relevant booking or Payments section to check payment status. For failed or refunded transactions, use the recorded transaction details and status shown in Royal Sphere.'; }
+    else if (/vendor|application|approve/.test(text)) { intent = 'vendor'; answer = 'Use Join as Vendor to submit your application. After admin approval, vendor dashboard access and vendor workflows become available.'; }
+    else if (/service|find|search|photograph|cater|decor/.test(text)) { intent = 'discovery'; answer = 'Use Find Services or Intelligent Search to filter services by category, city, price, and rating.'; }
+    else if (/review|rating/.test(text)) { intent = 'review'; answer = 'Verified review workflows are linked to completed service experiences and are managed through the customer review area.'; }
+    return { intent, answer, source: 'royal-sphere-support-rules' };
+  }
+
+
+
+  private async generateGeminiInsight(prompt: string, fallback: string): Promise<string> {
+    if ((process.env.AI_PROVIDER || 'gemini') !== 'gemini') return fallback;
+    try {
+      return await this.aiProviderFactory.getProvider('gemini').generateText(prompt);
+    } catch {
+      return fallback;
+    }
+  }
+
+  async getAIHealth() {
+    const configured = Boolean(process.env.GEMINI_API_KEY);
+    if (!configured) return { provider: 'gemini', configured: false, live: false, message: 'GEMINI_API_KEY is not configured' };
+    try {
+      const reply = await this.aiProviderFactory.getProvider('gemini').generateText(
+        'Reply with exactly: ROYAL_SPHERE_AI_OK',
+      );
+      return { provider: 'gemini', configured: true, live: reply.includes('ROYAL_SPHERE_AI_OK'), model: process.env.GEMINI_MODEL || 'gemini-2.5-flash' };
+    } catch (error: any) {
+      return { provider: 'gemini', configured: true, live: false, message: error?.message || 'Gemini check failed' };
+    }
+  }
+
+  async getAIExecutiveBrief() {
+    const analytics = await this.getSmartAnalytics();
+    const fallback = analytics.insights.join(' ');
+    const insight = await this.generateGeminiInsight(
+      `You are Royal Sphere's AI strategy analyst. Based only on this real platform JSON, give a concise 3-sentence operational brief. Do not invent numbers. JSON: ${JSON.stringify(analytics.metrics)}`,
+      fallback,
+    );
+    return { ...analytics, aiInsight: insight };
+  }
+
+  async getVendorAIBrief(vendorId: string) {
+    const [performance, sentiment, revenue] = await Promise.all([
+      this.getVendorPerformanceScore(vendorId),
+      this.getCustomerSentiment(vendorId),
+      this.getRevenueForecast(vendorId),
+    ]);
+    const fallback = `Performance score is ${performance.score}/100. Overall customer sentiment is ${sentiment.overall}. Revenue forecast confidence is ${revenue.confidence}.`;
+    const aiInsight = await this.generateGeminiInsight(
+      `Act as a vendor growth analyst for Royal Sphere. Use only the supplied data. Give 3 short actionable recommendations and do not invent metrics. DATA: ${JSON.stringify({ performance, sentiment, revenue })}`,
+      fallback,
+    );
+    return { performance, sentiment, revenue, aiInsight };
+  }
+
+  async supportAssistantAI(message: string) {
+    const fallback = await this.supportAssistant(message);
+    const answer = await this.generateGeminiInsight(
+      `You are Royal Sphere AI Support. Royal Sphere is an AI-powered services ecosystem for discovering, comparing, booking and managing trusted services. Answer the user's question briefly and helpfully. Never invent booking, payment, vendor, refund, or account status. If live account data is required, tell the user to check the relevant dashboard. User: ${String(message || '').slice(0, 1500)}`,
+      fallback.answer,
+    );
+    return { intent: fallback.intent, answer, source: answer === fallback.answer ? fallback.source : 'gemini' };
+  }
+
 }
+

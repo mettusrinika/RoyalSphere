@@ -383,3 +383,26 @@ export function useToggleSaved() {
   });
 }
 
+
+
+export function useAIHealth() {
+  return useQuery({ queryKey: ['ai', 'health'], queryFn: () => aiApi.getAIHealth().then(r => r.data) });
+}
+export function useDemandForecast() {
+  return useQuery({ queryKey: ['ai', 'demand-forecast'], queryFn: () => aiApi.getDemandForecast().then(r => r.data) });
+}
+export function useSmartAnalytics() {
+  return useQuery({ queryKey: ['ai', 'smart-analytics'], queryFn: () => aiApi.getSmartAnalytics().then(r => r.data) });
+}
+export function useExecutiveBrief() {
+  return useQuery({ queryKey: ['ai', 'executive-brief'], queryFn: () => aiApi.getExecutiveBrief().then(r => r.data) });
+}
+export function useVendorAIBrief(vendorId?: string) {
+  return useQuery({ queryKey: ['ai', 'vendor-brief', vendorId], queryFn: () => aiApi.getVendorBrief(vendorId!).then(r => r.data), enabled: Boolean(vendorId) });
+}
+export function useAISupport() {
+  return useMutation({ mutationFn: (message: string) => aiApi.supportAI(message).then(r => r.data) });
+}
+export function useAIModeration() {
+  return useMutation({ mutationFn: (text: string) => aiApi.moderateContent(text).then(r => r.data) });
+}

@@ -192,4 +192,77 @@ async recommendPackage(
     serviceId,
   );
 }
+
+
+  @Get('vendor-performance/:vendorId')
+  getVendorPerformance(@Param('vendorId') vendorId: string) {
+    return this.aiService.getVendorPerformanceScore(vendorId);
+  }
+
+  @Get('sentiment/:vendorId')
+  getSentiment(@Param('vendorId') vendorId: string) {
+    return this.aiService.getCustomerSentiment(vendorId);
+  }
+
+  @Get('revenue-forecast/:vendorId')
+  getRevenueForecast(@Param('vendorId') vendorId: string) {
+    return this.aiService.getRevenueForecast(vendorId);
+  }
+
+  @Get('demand-forecast')
+  getDemandForecast() {
+    return this.aiService.getDemandForecast();
+  }
+
+  @Roles('admin')
+  @ApiBearerAuth()
+  @Get('fraud-detection')
+  getFraudDetection() {
+    return this.aiService.getFraudDetection();
+  }
+
+  @Post('moderate')
+  moderate(@Body() body: { text: string }) {
+    return this.aiService.moderateContent(body.text);
+  }
+
+  @Roles('admin')
+  @ApiBearerAuth()
+  @Get('smart-analytics')
+  getSmartAnalytics() {
+    return this.aiService.getSmartAnalytics();
+  }
+
+  @Public()
+  @Post('support')
+  support(@Body() body: { message: string }) {
+    return this.aiService.supportAssistant(body.message);
+  }
+
+
+
+  @Public()
+  @Get('health')
+  getAIHealth() {
+    return this.aiService.getAIHealth();
+  }
+
+  @Roles('admin')
+  @ApiBearerAuth()
+  @Get('executive-brief')
+  getAIExecutiveBrief() {
+    return this.aiService.getAIExecutiveBrief();
+  }
+
+  @Get('vendor-brief/:vendorId')
+  getVendorAIBrief(@Param('vendorId') vendorId: string) {
+    return this.aiService.getVendorAIBrief(vendorId);
+  }
+
+  @Public()
+  @Post('support-ai')
+  supportAI(@Body() body: { message: string }) {
+    return this.aiService.supportAssistantAI(body.message);
+  }
+
 }

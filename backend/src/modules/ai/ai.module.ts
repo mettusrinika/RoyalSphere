@@ -12,6 +12,7 @@ import { GeminiProvider } from './providers/gemini.provider';
 import { ClaudeProvider } from './providers/claude.provider';
 import { LocalProvider } from './providers/local.provider';
 import { AIProviderFactory } from './providers/provider.factory';
+import { Payment, PaymentSchema } from '../payments/schemas/payment.schema';
 import {
   Category,
   CategorySchema,
@@ -24,6 +25,7 @@ import {
       { name: Booking.name, schema: BookingSchema },
       { name: User.name, schema: UserSchema },
       { name: Review.name, schema: ReviewSchema },
+      { name: Payment.name, schema: PaymentSchema },
       {
   name: Category.name,
   schema: CategorySchema,
@@ -42,3 +44,4 @@ import {
   exports: [AiService],
 })
 export class AiModule {}
+
