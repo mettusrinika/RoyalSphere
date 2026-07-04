@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'OMIQORA',
   webDir: 'www',
   server: {
-    url: 'https://royal-sphere-g44q.vercel.app',
+    url: 'https://omiqora.vercel.app',
     cleartext: false
   }
 };

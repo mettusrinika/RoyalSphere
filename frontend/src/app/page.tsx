@@ -68,9 +68,9 @@ export default function HomePage() {
               AI-Powered Services Ecosystem
             </div>
             <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-              Plan Your Perfect
+              Discover. Connect.
               <span className="block text-transparent bg-clip-text bg-gold-gradient">
-                Royal Event
+                Get It Done.
               </span>
             </h1>
             <p className="text-xl text-blue-200 mb-10 leading-relaxed">

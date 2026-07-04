@@ -1,4 +1,6 @@
 'use client';
+
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/lib/stores/authStore';
@@ -27,9 +29,9 @@ export default function DashboardLayout({ children, navItems, title }: Dashboard
       <div className="p-6 border-b border-white/10">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 bg-royal-gold rounded-lg flex items-center justify-center">
-            <Crown size={16} className="text-royal-blue" />
+            <Image src="/omiqora-icon.png" alt="OMIQORA" width={36} height={36} className="rounded-xl object-cover" />
           </div>
-          <span className="text-white font-bold text-lg">Royal <span className="text-royal-gold">Sphere</span></span>
+          <span className="text-white font-bold text-lg">OMI<span className="text-royal-gold">QORA</span></span>
         </Link>
       </div>
 

@@ -1,5 +1,7 @@
 'use client';
 
+
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import {
@@ -45,14 +47,11 @@ export default function Navbar() {
           className="flex items-center gap-2.5"
         >
           <div className="w-8 h-8 bg-royal-gold rounded-lg flex items-center justify-center">
-            <Crown
-              size={16}
-              className="text-royal-blue"
-            />
+            <Image src="/omiqora-icon.png" alt="OMIQORA" width={40} height={40} className="rounded-xl object-cover" priority />
           </div>
 
           <span className="text-white font-bold text-lg tracking-tight">
-            Royal <span className="text-royal-gold">Sphere</span>
+            OMI<span className="text-royal-gold">QORA</span>
           </span>
         </Link>
 

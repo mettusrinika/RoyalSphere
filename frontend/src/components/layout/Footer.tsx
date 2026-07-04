@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Crown, Mail, Phone, MapPin } from 'lucide-react';
 
@@ -8,11 +9,11 @@ export default function Footer() {
         <div className="col-span-1 md:col-span-2">
           <div className="flex items-center gap-2.5 mb-4">
             <div className="w-9 h-9 bg-royal-gold rounded-lg flex items-center justify-center">
-              <Crown size={18} className="text-royal-blue" />
+              <Image src="/omiqora-icon.png" alt="OMIQORA" width={40} height={40} className="rounded-xl object-cover" />
             </div>
 
             <span className="font-bold text-xl">
-              Royal <span className="text-royal-gold">Sphere</span>
+              OMI<span className="text-royal-gold">QORA</span>
             </span>
           </div>
 
