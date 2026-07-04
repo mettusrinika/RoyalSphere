@@ -66,7 +66,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'royal-sphere-auth',
+      name: 'omiqora-auth',
 
       partialize: (state) => ({
         user: state.user,

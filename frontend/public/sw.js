@@ -1,4 +1,4 @@
-const CACHE_NAME = 'royal-sphere-v1';
+const CACHE_NAME = 'omiqora-v1';
 
 self.addEventListener('install', () => {
   self.skipWaiting();

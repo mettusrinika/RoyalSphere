@@ -1955,7 +1955,7 @@ async recommendPackage(
     else if (/vendor|application|approve/.test(text)) { intent = 'vendor'; answer = 'Use Join as Vendor to submit your application. After admin approval, vendor dashboard access and vendor workflows become available.'; }
     else if (/service|find|search|photograph|cater|decor/.test(text)) { intent = 'discovery'; answer = 'Use Find Services or Intelligent Search to filter services by category, city, price, and rating.'; }
     else if (/review|rating/.test(text)) { intent = 'review'; answer = 'Verified review workflows are linked to completed service experiences and are managed through the customer review area.'; }
-    return { intent, answer, source: 'royal-sphere-support-rules' };
+    return { intent, answer, source: 'omiqora-support-rules' };
   }
 
 

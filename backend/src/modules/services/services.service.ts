@@ -298,7 +298,7 @@ async uploadImages(
             (resolve, reject) => {
               const stream = cloudinary.uploader.upload_stream(
                 {
-                  folder: 'royal-sphere/services',
+                  folder: 'omiqora/services',
                 },
                 (error, result) => {
                   if (error) {

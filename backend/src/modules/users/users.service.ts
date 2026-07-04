@@ -107,7 +107,7 @@ export class UsersService {
       const stream =
         cloudinary.uploader.upload_stream(
           {
-            folder: 'royal-sphere/avatars',
+            folder: 'omiqora/avatars',
             resource_type: 'image',
             transformation: [
               {

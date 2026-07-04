@@ -181,7 +181,7 @@ export class VendorApplicationsService {
           cloudinary.uploader.upload_stream(
             {
               folder:
-                'royal-sphere/documents',
+                'omiqora/documents',
               resource_type: 'auto',
             },
             (err, res) =>
