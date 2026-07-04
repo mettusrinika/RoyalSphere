@@ -89,7 +89,7 @@ function VerifyEmailContent() {
               <p className="text-xs text-green-700">
                 Your account is now fully verified.
                 You can safely sign in and start
-                using Royal Sphere.
+                using OMIQORA.
               </p>
             </div>
                         <Link

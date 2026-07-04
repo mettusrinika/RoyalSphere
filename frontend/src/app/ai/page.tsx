@@ -24,7 +24,7 @@ const groups = [
     ['Fraud Detection', 'Flags payment anomaly signals for admin review.', ShieldAlert],
     ['Automated Moderation', 'Screens text for abusive and spam-like patterns.', ScanText],
     ['Smart Analytics', 'Transforms live platform metrics into operational insights.', BarChart3],
-    ['AI Support Assistant', 'Gemini-powered guidance with Royal Sphere safety boundaries.', Bot],
+    ['AI Support Assistant', 'Gemini-powered guidance with OMIQORA safety boundaries.', Bot],
   ]},
 ];
 
@@ -40,7 +40,7 @@ export default function AIAdvantagePage() {
       const response = await aiApi.supportAI(message);
       setAnswer(response.data?.answer || 'No response available.');
     } catch {
-      setAnswer('AI support is temporarily unavailable. Please use the relevant Royal Sphere dashboard.');
+      setAnswer('AI support is temporarily unavailable. Please use the relevant OMIQORA dashboard.');
     } finally {
       setLoading(false);
     }
@@ -55,7 +55,7 @@ export default function AIAdvantagePage() {
             <div className="relative z-10">
               <p className="text-royal-bright font-semibold tracking-[0.22em] text-sm flex items-center gap-2"><Cpu size={17}/> ROYAL SPHERE INTELLIGENCE</p>
               <h1 className="royal-gold-text text-4xl md:text-6xl font-bold mt-3">AI Advantage</h1>
-              <p className="text-muted mt-4 max-w-3xl">Smarter decisions, better experiences and greater outcomes across the Royal Sphere ecosystem.</p>
+              <p className="text-muted mt-4 max-w-3xl">Smarter decisions, better experiences and greater outcomes across the OMIQORA ecosystem.</p>
               <Link href="/ai/budget-planner" className="btn-gold inline-flex mt-7 royal-shimmer">Open Budget Planner</Link>
             </div>
           </div>
@@ -76,7 +76,7 @@ export default function AIAdvantagePage() {
           ))}
 
           <section className="mt-12 royal-ai-card p-6 md:p-8">
-            <div className="flex items-center gap-3 mb-4"><Bot className="text-royal-bright royal-icon-glow"/><h2 className="royal-gold-text text-2xl font-bold">Royal Sphere AI Support</h2></div>
+            <div className="flex items-center gap-3 mb-4"><Bot className="text-royal-bright royal-icon-glow"/><h2 className="royal-gold-text text-2xl font-bold">OMIQORA AI Support</h2></div>
             <div className="flex flex-col md:flex-row gap-3">
               <input className="input flex-1" value={message} onChange={e => setMessage(e.target.value)} onKeyDown={e => e.key === 'Enter' && ask()} placeholder="Ask about services, bookings, payments or becoming a vendor..." />
               <button className="btn-gold royal-shimmer flex items-center justify-center gap-2" onClick={ask} disabled={loading}>{loading ? 'Thinking...' : <>Ask AI <Send size={17}/></>}</button>

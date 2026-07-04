@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Royal Sphere',
-    short_name: 'Royal Sphere',
+    name: 'OMIQORA',
+    short_name: 'OMIQORA',
     description:
       'AI-powered services ecosystem for discovering, comparing, booking, and managing trusted services.',
     start_url: '/',

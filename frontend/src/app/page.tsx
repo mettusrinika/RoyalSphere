@@ -174,7 +174,7 @@ export default function HomePage() {
       <section className="py-20 max-w-6xl mx-auto px-4">
         <div className="text-center mb-12">
           <p className="text-royal-gold font-medium text-sm mb-1 uppercase tracking-wide">Simple Process</p>
-          <h2 className="section-title">How Royal Sphere Works</h2>
+          <h2 className="section-title">How OMIQORA Works</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
@@ -198,7 +198,7 @@ export default function HomePage() {
       <section className="bg-royal-gradient text-white py-20">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-4">Ready to create something extraordinary?</h2>
-          <p className="text-blue-200 text-lg mb-8">Join Royal Sphere and discover trusted, verified service professionals.</p>
+          <p className="text-blue-200 text-lg mb-8">Join OMIQORA and discover trusted, verified service professionals.</p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Link href="/auth/register" className="btn-gold px-8 py-3.5 rounded-xl text-base">
               Get Started Free

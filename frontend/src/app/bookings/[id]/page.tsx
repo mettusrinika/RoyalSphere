@@ -54,7 +54,7 @@ export default function BookingDetailPage() {
         key: order.key,
         amount: order.amount,
         currency: order.currency,
-        name: 'Royal Sphere',
+        name: 'OMIQORA',
         description: `Booking ${booking.bookingNumber}`,
         order_id: order.orderId,
         handler: async (response: any) => {

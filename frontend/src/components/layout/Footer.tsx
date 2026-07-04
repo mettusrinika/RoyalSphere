@@ -17,7 +17,7 @@ export default function Footer() {
           </div>
 
           <p className="text-blue-300 text-sm leading-relaxed max-w-md">
-            Royal Sphere is an AI-powered services ecosystem connecting customers,
+            OMIQORA is an AI-powered services ecosystem connecting customers,
             verified vendors and businesses through one trusted platform. Starting
             with events and lifestyle services, our vision is to become India's
             most trusted services marketplace.
@@ -103,7 +103,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10 py-5 text-center text-sm text-blue-400">
-        © {new Date().getFullYear()} Royal Sphere. All rights reserved.
+        © {new Date().getFullYear()} OMIQORA. All rights reserved.
       </div>
     </footer>
   );

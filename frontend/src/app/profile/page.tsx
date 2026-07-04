@@ -386,7 +386,7 @@ const handleDeleteAccount = async () => {
       </h2>
 
       <p className="text-sm text-muted mt-2">
-        Deactivate your Royal Sphere account and revoke all active sessions.
+        Deactivate your OMIQORA account and revoke all active sessions.
         You will no longer be able to sign in using this account.
       </p>
     </div>
@@ -430,7 +430,7 @@ const handleDeleteAccount = async () => {
       </div>
 
       <p className="text-sm text-muted mb-4">
-        This will deactivate your Royal Sphere account and sign you out from
+        This will deactivate your OMIQORA account and sign you out from
         all sessions. Enter your password to confirm.
       </p>
 

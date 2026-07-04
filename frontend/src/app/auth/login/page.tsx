@@ -59,7 +59,7 @@ export default function LoginPage() {
           </h1>
 
           <p className="text-blue-300 text-sm mt-1">
-            Sign in to your Royal Sphere account
+            Sign in to your OMIQORA account
           </p>
         </div>
 

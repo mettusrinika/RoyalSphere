@@ -114,7 +114,7 @@ if (
       <EmptyState
         icon="⏳"
         title="Application Under Review"
-        description="Your vendor application is currently being reviewed by the Royal Sphere admin team."
+        description="Your vendor application is currently being reviewed by the OMIQORA admin team."
       />
     </DashboardLayout>
   );

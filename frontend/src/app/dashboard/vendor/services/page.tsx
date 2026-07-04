@@ -97,7 +97,7 @@ export default function VendorServicesPage() {
           <div className="card w-full max-w-sm text-center">
             <p className="text-3xl mb-3">🗑️</p>
             <h3 className="font-semibold text-foreground mb-2">Delete this Service?</h3>
-            <p className="text-muted text-sm mb-5">This will permanently remove the service from Royal Sphere. This action cannot be undone.</p>
+            <p className="text-muted text-sm mb-5">This will permanently remove the service from OMIQORA. This action cannot be undone.</p>
             <div className="flex gap-3">
               <button onClick={() => setConfirmDelete(null)} className="flex-1 btn-outline py-2.5 rounded-xl text-sm">Cancel</button>
               <button

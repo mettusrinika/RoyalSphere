@@ -142,7 +142,7 @@ const vendorApproved = user?.isVendorApproved;
         </h3>
 
         <p className="text-muted mt-2">
-          Start selling your services on Royal Sphere.
+          Start selling your services on OMIQORA.
           Submit your business details, upload the required
           verification documents and once approved by our
           admin team you'll receive your Vendor Dashboard.
@@ -187,7 +187,7 @@ Vendor Application Under Review
 </h3>
 
 <p className="text-sm text-yellow-700 mt-1">
-Your documents are being verified by the Royal Sphere Admin.
+Your documents are being verified by the OMIQORA Admin.
 You'll receive access to your Vendor Dashboard once approved.
 </p>
 

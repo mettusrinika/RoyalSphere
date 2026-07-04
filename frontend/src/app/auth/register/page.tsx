@@ -92,7 +92,7 @@ export default function RegisterPage() {
           </div>
 
           <h1 className="text-2xl font-bold text-white">
-            Join Royal Sphere
+            Join OMIQORA
           </h1>
 
           <p className="text-blue-300 text-sm mt-1">
@@ -273,7 +273,7 @@ export default function RegisterPage() {
   <p className="text-sm text-gray-600">
     Create your account first. After signing in, you can apply as a
     vendor by submitting your business details and required documents.
-    Once approved by the Royal Sphere admin team, you'll gain access
+    Once approved by the OMIQORA admin team, you'll gain access
     to the Vendor Dashboard and can start listing your services.
   </p>
 </div>
@@ -321,7 +321,7 @@ export default function RegisterPage() {
               className="btn-primary w-full py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending
-                ? 'Creating your Royal Sphere account...'
+                ? 'Creating your OMIQORA account...'
                 : 'Create Account'}
             </button>
 

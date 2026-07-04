@@ -116,7 +116,7 @@ const razorpay = new window.Razorpay({
 
   currency: order.currency,
 
-  name: 'Royal Sphere',
+  name: 'OMIQORA',
 
   description: booking.bookingNumber,
 
@@ -406,7 +406,7 @@ razorpay.open();
                   </li>
 
                   <li>
-                    ✓ Royal Sphere never stores your card information.
+                    ✓ OMIQORA never stores your card information.
                   </li>
 
                   <li>

@@ -205,7 +205,7 @@ const response =
 
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-royal-blue">
-              Become a Royal Sphere Vendor
+              Become a OMIQORA Vendor
             </h1>
 
             <p className="mt-2 text-muted">
@@ -591,7 +591,7 @@ const response =
                     </li>
 
                     <li>
-                      Royal Sphere Admin reviews your
+                      OMIQORA Admin reviews your
                       application.
                     </li>
 
