@@ -84,12 +84,47 @@ documents: Array<{
   @Prop()
   panNumber: string;
 
-  @Prop({ type: Object })
+  @Prop({ type: Object, select: false })
   bankDetails: {
     accountName: string;
     accountNumber: string;
     ifscCode: string;
     bankName: string;
+  };
+
+  @Prop({ type: Object, default: {} })
+  payoutOnboarding: {
+    status: 'not_started' | 'details_submitted' | 'provider_pending' | 'active' | 'restricted';
+    provider?: string;
+    providerAccountId?: string;
+    accountLast4?: string;
+    ifscCode?: string;
+    bankName?: string;
+    submittedAt?: Date;
+    activatedAt?: Date;
+    restrictionReason?: string;
+  };
+
+  @Prop({ type: Object, default: {} })
+  kyc: {
+    status: 'not_started' | 'documents_submitted' | 'provider_pending' | 'verified' | 'rejected';
+    provider?: string;
+    providerReference?: string;
+    submittedAt?: Date;
+    verifiedAt?: Date;
+    rejectionReason?: string;
+  };
+
+  @Prop({ type: Object })
+  serviceLocation?: {
+    formattedAddress?: string;
+    city?: string;
+    state?: string;
+    pincode?: string;
+    latitude?: number;
+    longitude?: number;
+    placeId?: string;
+    serviceRadiusKm?: number;
   };
 }
 

@@ -18,8 +18,7 @@ export default function ServiceDetailPage() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
   const { data: service, isLoading } = useService(id);
-  console.log("SERVICE DATA:", service);
-  const { data: reviewData } = useServiceReviews(id);
+const { data: reviewData } = useServiceReviews(id);
   const { mutate: createBooking, isPending: booking } = useCreateBooking();
   const { mutate: toggleSaved } = useToggleSaved();
   const [activeImage, setActiveImage] = useState(0);

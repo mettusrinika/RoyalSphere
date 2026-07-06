@@ -270,7 +270,7 @@ export default function RegisterPage() {
     Want to become a Vendor?
   </h3>
 
-  <p className="text-sm text-gray-600">
+  <p className="text-sm text-gray-900">
     Create your account first. After signing in, you can apply as a
     vendor by submitting your business details and required documents.
     Once approved by the OMIQORA admin team, you'll gain access

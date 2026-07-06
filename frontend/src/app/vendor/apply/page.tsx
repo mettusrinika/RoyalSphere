@@ -70,9 +70,7 @@ export default function VendorApplicationPage() {
     isLoading,
     refetch,
   } = useMyApplication();
-  console.log('Vendor Application:', application);
-
-  const [submitting, setSubmitting] =
+const [submitting, setSubmitting] =
     useState(false);
 
   const [documents, setDocuments] =

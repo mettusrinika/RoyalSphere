@@ -37,8 +37,23 @@ export class User {
   @Prop({ enum: UserStatus, default: UserStatus.PENDING_VERIFICATION })
   status: UserStatus;
 
-  @Prop()
+  @Prop({ trim: true })
   phone: string;
+
+  @Prop({ default: false })
+  phoneVerified: boolean;
+
+  @Prop({ select: false })
+  phoneOtpHash?: string;
+
+  @Prop({ select: false })
+  phoneOtpExpiry?: Date;
+
+  @Prop({ default: 0, select: false })
+  phoneOtpAttempts: number;
+
+  @Prop({ select: false })
+  phoneOtpLastSentAt?: Date;
 
   @Prop()
   avatar: string;
@@ -53,7 +68,14 @@ export class User {
     state: string;
     pincode: string;
     country: string;
+    formattedAddress?: string;
+    latitude?: number;
+    longitude?: number;
+    placeId?: string;
   };
+
+  @Prop({ default: false })
+  profileCompleted: boolean;
 
   @Prop({ default: false })
   emailVerified: boolean;
@@ -120,6 +142,7 @@ export const UserSchema = SchemaFactory.createForClass(User);
 
 // Indexes
 UserSchema.index({ email: 1 });
+UserSchema.index({ phone: 1 }, { unique: true, sparse: true });
 UserSchema.index({ role: 1, status: 1 });
 UserSchema.index({ 'vendorProfile.rating': -1 });
 UserSchema.index({ createdAt: -1 });
@@ -134,9 +157,10 @@ UserSchema.pre('save', function (next) {
   let score = 0;
   if (this.firstName && this.lastName) score += 20;
   if (this.email && this.emailVerified) score += 20;
-  if (this.phone) score += 20;
+  if (this.phone && this.phoneVerified) score += 20;
   if (this.avatar) score += 20;
   if (this.address?.city) score += 20;
   this.profileCompletion = score;
+  this.profileCompleted = score >= 60;
   next();
 });

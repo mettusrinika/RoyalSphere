@@ -10,3 +10,13 @@ coverage
 *.tsbuildinfo
 
 typescript-errors.txt
+
+.env.*
+!.env.example
+node_modules/
+.next/
+.expo/
+dist/
+build/
+.royalsphere-backup/
+.omiqora-completion-checkpoint/

@@ -26,6 +26,8 @@ import { UploadsModule } from './modules/uploads/uploads.module';
 
 import { SecurityMiddleware } from './common/middleware/security.middleware';
 import { SchedulerModule } from './modules/scheduler/scheduler.module';
+import { PhoneAuthModule } from './modules/phone-auth/phone-auth.module';
+import { PlatformReadinessModule } from './modules/platform-readiness/platform-readiness.module';
 
 @Module({
   imports: [
@@ -48,6 +50,8 @@ import { SchedulerModule } from './modules/scheduler/scheduler.module';
     EventEmitterModule.forRoot(),
     ScheduleModule.forRoot(),
     AuthModule,
+    PhoneAuthModule,
+    PlatformReadinessModule,
     UsersModule,
     VendorApplicationsModule,
     CategoriesModule,

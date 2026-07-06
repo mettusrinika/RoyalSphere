@@ -1,4 +1,4 @@
-﻿import axios from "axios";
+import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
 export const API_URL = "https://royalsphere-api.onrender.com/api/v1";
@@ -71,6 +71,8 @@ api.interceptors.response.use(
 export const endpoints = {
   login: (d:any) => api.post("/auth/login", d),
   register: (d:any) => api.post("/auth/register", d),
+  requestPhoneOtp: (phone:string) => api.post("/auth/phone-otp/request", {phone}),
+  verifyPhoneOtp: (phone:string,otp:string) => api.post("/auth/phone-otp/verify", {phone,otp}),
   me: () => api.get("/auth/me"),
   profile: () => api.get("/users/profile"),
   updateProfile: (d:any) => api.put("/users/profile", d),
@@ -110,6 +112,11 @@ export const endpoints = {
   myServices: () => api.get("/services/my-services"),
   vendorApplication: () => api.get("/vendor-applications/my-application"),
   applyVendor: (d:any) => api.post("/vendor-applications/apply", d),
+  submitVendorKyc: (provider="manual_admin_review") => api.post("/platform/vendor/kyc/submit", {provider}),
+  submitPayoutOnboarding: (d:any) => api.post("/platform/vendor/payout-onboarding", d),
+  vendorReadiness: () => api.get("/platform/vendor/readiness"),
+  checkServiceability: (serviceId:string,latitude:number,longitude:number) =>
+    api.get("/platform/serviceability", {params:{serviceId,latitude,longitude}}),
 
   aiHome: () => api.get("/ai/home"),
   aiSearch: (q:string) => api.get("/ai/search", {params:{q}}),

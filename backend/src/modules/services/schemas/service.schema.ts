@@ -81,12 +81,20 @@ export class Service {
       city: String,
       state: String,
       serviceRadius: Number,
+      latitude: Number,
+      longitude: Number,
+      placeId: String,
+      formattedAddress: String,
     },
   })
   location: {
     city: string;
     state: string;
     serviceRadius: number;
+    latitude?: number;
+    longitude?: number;
+    placeId?: string;
+    formattedAddress?: string;
   };
 
   // ===========================

@@ -23,8 +23,7 @@ export default function ServiceFormPage() {
   const params = useParams();
   const isEdit = params?.id && params.id !== 'new';
   const { data: existing } = useService(isEdit ? params.id as string : '');
-  console.log('existing service:', existing);
-  const { data: categories } = useCategories();
+const { data: categories } = useCategories();
   const { mutate: create, isPending: creating } = useCreateService();
   const { mutate: update, isPending: updating } = useUpdateService();
   const [uploading, setUploading] = useState(false);

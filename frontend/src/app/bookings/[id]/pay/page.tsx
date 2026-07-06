@@ -206,8 +206,7 @@ razorpay.open();
         src="https://checkout.razorpay.com/v1/checkout.js"
         strategy="afterInteractive"
         onLoad={() => {
-          console.log('Razorpay Loaded');
-        }}
+}}
       />
 
       <div className="min-h-screen bg-background">

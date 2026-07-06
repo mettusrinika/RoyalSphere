@@ -12,6 +12,10 @@ export const authApi = {
   verifyEmail: (token: string) => api.get(`/auth/verify-email/${token}`),
   resendVerification: (email: string) =>
   api.post('/auth/resend-verification', { email }),
+  requestPhoneOtp: (phone: string) =>
+    api.post('/auth/phone-otp/request', { phone }),
+  verifyPhoneOtp: (phone: string, otp: string) =>
+    api.post('/auth/phone-otp/verify', { phone, otp }),
 };
 
 // ── Users ─────────────────────────────────────────────────────────────────
@@ -128,6 +132,22 @@ export const vendorApplicationsApi = {
 };
 
 // ── Notifications ─────────────────────────────────────────────────────────
+export const platformApi = {
+  submitVendorKyc: (provider = 'manual_admin_review') =>
+    api.post('/platform/vendor/kyc/submit', { provider }),
+  submitPayoutOnboarding: (data: any) =>
+    api.post('/platform/vendor/payout-onboarding', data),
+  getVendorReadiness: () =>
+    api.get('/platform/vendor/readiness'),
+  checkServiceability: (
+    serviceId: string,
+    latitude: number,
+    longitude: number,
+  ) =>
+    api.get('/platform/serviceability', {
+      params: { serviceId, latitude, longitude },
+    }),
+};
 export const notificationsApi = {
   getAll: (params?: any) => api.get('/notifications', { params }),
   markAsRead: (id: string) => api.patch(`/notifications/${id}/read`),

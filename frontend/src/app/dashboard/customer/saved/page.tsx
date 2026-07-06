@@ -18,9 +18,7 @@ const navItems = [
 
 export default function SavedServicesPage() {
   const { data: services, isLoading } = useSavedServices();
-  console.log('Saved Services:', services);
-
-  return (
+return (
     <DashboardLayout navItems={navItems} title="Saved Services">
       <div className="mb-4 text-sm text-muted">{Array.isArray(services) ? services.length : 0} saved services</div>
 

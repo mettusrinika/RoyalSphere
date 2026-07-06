@@ -41,12 +41,7 @@ toggleSaved(
   @Request() req,
   @Param('serviceId') serviceId: string,
 ) {
-  console.log('======================');
-  console.log('Logged in user:', req.user);
-  console.log('Service ID:', serviceId);
-  console.log('======================');
-
-  return this.usersService.toggleSavedService(
+return this.usersService.toggleSavedService(
     req.user._id.toString(),
     serviceId,
   );

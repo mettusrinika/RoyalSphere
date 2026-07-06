@@ -1,4 +1,4 @@
-import {
+﻿import {
   Injectable, NotFoundException, ForbiddenException, BadRequestException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -89,7 +89,7 @@ export class BookingsService {
   await this.notificationsService.createNotification({
     userId: service.vendorId,
     title: 'New Booking Request',
-    message: `You have a new booking request – ${bookingNumber}`,
+    message: `You have a new booking request â€“ ${bookingNumber}`,
     type: NotificationType.BOOKING_REQUEST,
     actionUrl: `/dashboard/vendor/bookings/${booking._id}`,
     notifData: {
@@ -355,3 +355,4 @@ async getAdminBookings(
       .limit(5);
   }
 }
+

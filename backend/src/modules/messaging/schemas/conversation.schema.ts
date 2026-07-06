@@ -144,6 +144,11 @@ ConversationSchema.index({
   serviceId: 1,
 });
 
+ConversationSchema.index(
+  { customerId: 1, vendorId: 1, bookingId: 1, serviceId: 1 },
+  { unique: true, name: 'uniq_customer_vendor_booking_service' },
+);
+
 ConversationSchema.index({
   status: 1,
 });

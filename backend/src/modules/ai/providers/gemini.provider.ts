@@ -16,6 +16,9 @@ export class GeminiProvider implements AIProvider {
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
         method: 'POST',
+        signal: AbortSignal.timeout(
+          Number(process.env.AI_PROVIDER_TIMEOUT_MS || 20000),
+        ),
         headers: {
           'Content-Type': 'application/json',
           'x-goog-api-key': apiKey,
@@ -36,7 +39,12 @@ export class GeminiProvider implements AIProvider {
       throw new Error(`Gemini API request failed with status ${response.status}`);
     }
 
-    const data: any = await response.json();
+    let data: any;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error('Gemini returned malformed JSON');
+    }
     const text = (data?.candidates?.[0]?.content?.parts || [])
       .map((part: any) => part?.text || '')
       .join('')
