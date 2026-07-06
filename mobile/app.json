@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "OMIQORA",
+    "slug": "omiqora",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "omiqora",
+    "userInterfaceStyle": "dark",
+    "icon": "./assets/omiqora-icon.png",
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#01030F",
+          "image": "./assets/omiqora-icon.png",
+          "imageWidth": 220,
+          "resizeMode": "contain"
+        }
+      ],
+      "@react-native-community/datetimepicker"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.omiqora.app"
+    },
+    "android": {
+      "package": "com.omiqora.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/omiqora-icon.png",
+        "backgroundColor": "#01030F"
+      }
+    },
+    "web": {
+      "favicon": "./assets/omiqora-icon.png"
+    }
+  }
+}

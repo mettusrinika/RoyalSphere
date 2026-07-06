@@ -58,6 +58,11 @@ export class BookingsService {
     .slice(0, 6)
     .toUpperCase()}`;
 
+  const authoritativeAmount = Number(service.basePrice);
+  if (!Number.isFinite(authoritativeAmount) || authoritativeAmount <= 0) {
+    throw new BadRequestException('Service price is invalid');
+  }
+
   const booking = await this.bookingModel.create({
     bookingNumber,
     customerId: new Types.ObjectId(customerId),
@@ -67,11 +72,9 @@ export class BookingsService {
     eventEndDate: dto.eventEndDate,
     eventLocation: dto.eventLocation,
     eventDetails: dto.eventDetails,
-    amount: dto.amount || service.basePrice,
-    commission:
-      (dto.amount || service.basePrice) * 0.1,
-    vendorPayout:
-      (dto.amount || service.basePrice) * 0.9,
+    amount: authoritativeAmount,
+    commission: authoritativeAmount * 0.1,
+    vendorPayout: authoritativeAmount * 0.9,
     statusHistory: [
       {
         status: BookingStatus.PENDING,
