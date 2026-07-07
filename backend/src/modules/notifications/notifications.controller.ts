@@ -36,6 +36,11 @@ export class NotificationsController {
     );
   }
 
+  @Post('push-test')
+  testPush(@Request() req) {
+    return this.notificationsService.createTestPush(req.user._id.toString());
+  }
+
   @Delete('push-token')
   unregisterPushToken(@Request() req) {
     return this.notificationsService.unregisterPushToken(

@@ -78,15 +78,10 @@ async function registerForPushNotifications(){
   }
 
   await endpoints.registerPushToken(token.data);
-
+  await endpoints.testPush();
   Alert.alert(
-    "Push ready",
-    token.data,
-  );
-
-  console.log(
-    "OMIQORA_EXPO_PUSH_TOKEN",
-    token.data,
+    "Notifications ready",
+    "OMIQORA registered this device and sent a real push proof.",
   );
 }
 

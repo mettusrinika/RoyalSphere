@@ -1,4 +1,4 @@
-﻿import {
+import {
   Injectable, NotFoundException, ForbiddenException, BadRequestException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -18,88 +18,63 @@ export class BookingsService {
   ) {}
 
   async createBooking(customerId: string, dto: any) {
-  const service = await this.serviceModel.findById(dto.serviceId);
+    const service = await this.serviceModel.findById(dto.serviceId);
+    if (!service) throw new NotFoundException('Service not found');
+    if (service.status !== 'active') throw new BadRequestException('Service is not available');
+    if (service.vendorId.toString() === customerId) throw new BadRequestException('You cannot book your own service');
 
-  if (!service)
-    throw new NotFoundException('Service not found');
+    const fromDate = new Date(dto.eventDate);
+    const toDate = new Date(dto.eventEndDate ?? dto.eventDate);
+    if (Number.isNaN(fromDate.getTime()) || Number.isNaN(toDate.getTime())) throw new BadRequestException('Valid booking dates are required');
+    fromDate.setHours(0, 0, 0, 0);
+    toDate.setHours(0, 0, 0, 0);
+    if (toDate < fromDate) throw new BadRequestException('Booking end date cannot be before start date');
+    const today = new Date(); today.setHours(0,0,0,0);
+    if (fromDate < today) throw new BadRequestException('Booking start date cannot be in the past');
 
-  if (service.status !== 'active')
-    throw new BadRequestException(
-      'Service is not available',
-    );
-
-  if (service.vendorId.toString() === customerId) {
-    throw new BadRequestException(
-      'You cannot book your own service',
-    );
-  }
-
-  const existingBooking =
-    await this.bookingModel.findOne({
-      customerId: new Types.ObjectId(customerId),
+    const overlapping = await this.bookingModel.findOne({
       serviceId: new Types.ObjectId(dto.serviceId),
-      eventDate: dto.eventDate,
-      status: {
-        $in: [
-          BookingStatus.PENDING,
-          BookingStatus.ACCEPTED,
-          BookingStatus.IN_PROGRESS,
-        ],
-      },
+      status: { $in: [BookingStatus.PENDING, BookingStatus.ACCEPTED, BookingStatus.PAYMENT_PENDING, BookingStatus.CONFIRMED, BookingStatus.IN_PROGRESS] },
+      eventDate: { $lte: toDate },
+      $or: [
+        { eventEndDate: { $gte: fromDate } },
+        { eventEndDate: null, eventDate: { $gte: fromDate } },
+      ],
+    });
+    if (overlapping) throw new BadRequestException('This service already has an overlapping booking for the selected date range');
+
+    const basePrice = Number(service.basePrice);
+    if (!Number.isFinite(basePrice) || basePrice <= 0) throw new BadRequestException('Service price is invalid');
+    const inclusiveDays = Math.floor((toDate.getTime() - fromDate.getTime()) / 86400000) + 1;
+    const authoritativeAmount = service.priceType === 'per_day' ? basePrice * inclusiveDays : basePrice;
+    const bookingNumber = `RS-${Date.now()}-${uuidv4().slice(0,6).toUpperCase()}`;
+
+    const booking = await this.bookingModel.create({
+      bookingNumber,
+      customerId: new Types.ObjectId(customerId),
+      vendorId: service.vendorId,
+      serviceId: new Types.ObjectId(dto.serviceId),
+      eventDate: fromDate,
+      eventEndDate: toDate,
+      eventLocation: String(dto.eventLocation ?? '').trim(),
+      eventDetails: typeof dto.eventDetails === 'object' ? dto.eventDetails : { specialRequirements: String(dto.eventDetails ?? '') },
+      amount: authoritativeAmount,
+      commission: authoritativeAmount * 0.1,
+      vendorPayout: authoritativeAmount * 0.9,
+      statusHistory: [{ status: BookingStatus.PENDING, updatedAt: new Date(), updatedBy: 'customer', note: `Booking created for ${inclusiveDays} day(s)` }],
     });
 
-  if (existingBooking) {
-    throw new BadRequestException(
-      'You already have a booking for this service on the selected date.',
-    );
+    await this.notificationsService.createNotification({
+      userId: service.vendorId,
+      title: 'New Booking Request',
+      message: `You have a new booking request - ${bookingNumber}`,
+      type: NotificationType.BOOKING_REQUEST,
+      actionUrl: `/dashboard/vendor/bookings/${booking._id}`,
+      notifData: { bookingId: booking._id, bookingNumber },
+    });
+    return booking;
   }
 
-  const bookingNumber = `RS-${Date.now()}-${uuidv4()
-    .slice(0, 6)
-    .toUpperCase()}`;
-
-  const authoritativeAmount = Number(service.basePrice);
-  if (!Number.isFinite(authoritativeAmount) || authoritativeAmount <= 0) {
-    throw new BadRequestException('Service price is invalid');
-  }
-
-  const booking = await this.bookingModel.create({
-    bookingNumber,
-    customerId: new Types.ObjectId(customerId),
-    vendorId: service.vendorId,
-    serviceId: new Types.ObjectId(dto.serviceId),
-    eventDate: dto.eventDate,
-    eventEndDate: dto.eventEndDate,
-    eventLocation: dto.eventLocation,
-    eventDetails: dto.eventDetails,
-    amount: authoritativeAmount,
-    commission: authoritativeAmount * 0.1,
-    vendorPayout: authoritativeAmount * 0.9,
-    statusHistory: [
-      {
-        status: BookingStatus.PENDING,
-        updatedAt: new Date(),
-        updatedBy: 'customer',
-        note: 'Booking created',
-      },
-    ],
-  });
-
-  // Notify vendor
-  await this.notificationsService.createNotification({
-    userId: service.vendorId,
-    title: 'New Booking Request',
-    message: `You have a new booking request â€“ ${bookingNumber}`,
-    type: NotificationType.BOOKING_REQUEST,
-    actionUrl: `/dashboard/vendor/bookings/${booking._id}`,
-    notifData: {
-      bookingId: booking._id,
-      bookingNumber,
-    },
-  });
-
-  return booking;
-}
   async getCustomerBookings(customerId: string, status?: string, page = 1, limit = 10) {
     const query: any = { customerId: new Types.ObjectId(customerId) };
     if (status) query.status = status;
@@ -355,4 +330,3 @@ async getAdminBookings(
       .limit(5);
   }
 }
-

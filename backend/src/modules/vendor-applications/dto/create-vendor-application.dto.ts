@@ -71,4 +71,27 @@ export class CreateVendorApplicationDto {
   @IsOptional()
   @IsString()
   youtube?: string;
+
+  @IsOptional()
+  portfolioLinks?: string[];
+
+  @IsOptional()
+  bankDetails?: {
+    accountName: string;
+    accountNumber: string;
+    ifscCode: string;
+    bankName: string;
+  };
+
+  @IsOptional()
+  serviceLocation?: {
+    formattedAddress?: string;
+    city?: string;
+    state?: string;
+    pincode?: string;
+    latitude?: number;
+    longitude?: number;
+    placeId?: string;
+    serviceRadiusKm?: number;
+  };
 }

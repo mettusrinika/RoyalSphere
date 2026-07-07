@@ -123,6 +123,13 @@ export class VendorApplicationsService {
     const allowedDocumentTypes = [
       'aadhaar',
       'pan',
+      'gst',
+      'business_license',
+      'profile_photo',
+      'shop_photo',
+      'portfolio',
+      'work_proof',
+      'other',
     ];
 
     if (
@@ -131,7 +138,7 @@ export class VendorApplicationsService {
       )
     ) {
       throw new BadRequestException(
-        'Only Aadhaar or PAN documents are accepted',
+        'Unsupported vendor verification document type',
       );
     }
 

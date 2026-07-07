@@ -115,6 +115,9 @@ documents: Array<{
     rejectionReason?: string;
   };
 
+  @Prop({ type: [String], default: [] })
+  portfolioLinks?: string[];
+
   @Prop({ type: Object })
   serviceLocation?: {
     formattedAddress?: string;

@@ -100,6 +100,7 @@ export const endpoints = {
   readAll: () => api.patch("/notifications/read-all"),
   registerPushToken: (expoPushToken:string) =>
     api.post("/notifications/push-token", {expoPushToken}),
+  testPush: () => api.post("/notifications/push-test"),
   unregisterPushToken: () =>
     api.delete("/notifications/push-token"),
 

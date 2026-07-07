@@ -90,6 +90,17 @@ this.transporter = nodemailer.createTransport({
     };
   }
 
+  async createTestPush(userId: string) {
+    return this.createNotification({
+      userId,
+      title: 'OMIQORA notifications are live',
+      message: 'Real push delivery is connected to your authenticated device.',
+      type: NotificationType.SYSTEM,
+      actionUrl: '/notifications',
+      notifData: { proof: 'push-registration' },
+    });
+  }
+
   async unregisterPushToken(userId: string) {
     await this.userModel.updateOne(
       { _id: new Types.ObjectId(userId) },
