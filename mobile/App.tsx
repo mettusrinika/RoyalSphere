@@ -1,5 +1,5 @@
 import React,{useEffect} from "react";
-import {Platform} from "react-native";
+import {Alert,Platform} from "react-native";
 import {StatusBar} from "expo-status-bar";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import * as Device from "expo-device";
@@ -20,7 +20,13 @@ Notifications.setNotificationHandler({
 });
 
 async function registerForPushNotifications(){
-  if(!Device.isDevice)return;
+  if(!Device.isDevice){
+    Alert.alert(
+      "Push diagnostics",
+      "Push notifications require a physical device.",
+    );
+    return;
+  }
 
   if(Platform.OS==="android"){
     await Notifications.setNotificationChannelAsync("default",{
@@ -38,22 +44,50 @@ async function registerForPushNotifications(){
     status=requested.status;
   }
 
-  if(status!=="granted")return;
+  if(status!=="granted"){
+    Alert.alert(
+      "Notifications disabled",
+      `Permission status: ${status}`,
+    );
+    return;
+  }
 
   const projectId=
     Constants.easConfig?.projectId ??
     Constants.expoConfig?.extra?.eas?.projectId;
 
-  if(!projectId)return;
+  if(!projectId){
+    Alert.alert(
+      "Push registration failed",
+      "EAS project ID is missing.",
+    );
+    return;
+  }
 
   const token=
     await Notifications.getExpoPushTokenAsync({
       projectId,
     });
 
-  if(token.data){
-    await endpoints.registerPushToken(token.data);
+  if(!token.data){
+    Alert.alert(
+      "Push registration failed",
+      "Expo did not return a push token.",
+    );
+    return;
   }
+
+  await endpoints.registerPushToken(token.data);
+
+  Alert.alert(
+    "Push ready",
+    token.data,
+  );
+
+  console.log(
+    "OMIQORA_EXPO_PUSH_TOKEN",
+    token.data,
+  );
 }
 
 function Content(){
