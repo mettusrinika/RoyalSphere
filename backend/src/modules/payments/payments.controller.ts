@@ -38,8 +38,14 @@ export class PaymentsController {
 
   @Post('verify')
   @Roles('customer')
-  verify(@Body() dto: any) {
-    return this.paymentsService.verifyPayment(dto);
+  verify(
+    @Request() req,
+    @Body() dto: VerifyPaymentDto,
+  ) {
+    return this.paymentsService.verifyPayment(
+      dto,
+      req.user._id.toString(),
+    );
   }
 
   @Get('history')

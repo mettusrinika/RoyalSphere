@@ -141,29 +141,47 @@ try {
     };
   }
 
-  async verifyPayment(dto: {
-    razorpayOrderId: string;
-    razorpayPaymentId: string;
-    razorpaySignature: string;
-    bookingId: string;
-  }) {
+  async verifyPayment(
+    dto: {
+      razorpayOrderId: string;
+      razorpayPaymentId: string;
+      razorpaySignature: string;
+      bookingId: string;
+    },
+    customerId: string,
+  ) {
     const {
       razorpayOrderId,
       razorpayPaymentId,
       razorpaySignature,
       bookingId,
     } = dto;
-    const existingPayment = await this.paymentModel.findOne({
-  razorpayPaymentId,
-});
+    const paymentRecord = await this.paymentModel.findOne({
+      razorpayOrderId,
+    });
 
-if (existingPayment?.status === 'paid') {
-  return {
-    success: true,
-    message: 'Payment already verified',
-    payment: existingPayment,
-  };
-}
+    if (!paymentRecord) {
+      throw new NotFoundException(
+        'Payment order not found',
+      );
+    }
+
+    if (
+      paymentRecord.customerId.toString() !== customerId ||
+      paymentRecord.bookingId.toString() !== bookingId
+    ) {
+      throw new BadRequestException(
+        'Payment does not belong to this booking',
+      );
+    }
+
+    if (paymentRecord.status === 'paid') {
+      return {
+        success: true,
+        message: 'Payment already verified',
+        payment: paymentRecord,
+      };
+    }
 
     const body =
       razorpayOrderId +
@@ -200,9 +218,19 @@ if (existingPayment?.status === 'paid') {
       );
     }
     const razorpayPayment =
-  await this.razorpay.payments.fetch(
-    razorpayPaymentId,
-  );
+      await this.razorpay.payments.fetch(
+        razorpayPaymentId,
+      );
+
+    if (
+      razorpayPayment.order_id !== razorpayOrderId ||
+      Number(razorpayPayment.amount) !==
+        Math.round(paymentRecord.amount * 100)
+    ) {
+      throw new BadRequestException(
+        'Payment order or amount mismatch',
+      );
+    }
     const payment =
       await this.paymentModel.findOneAndUpdate(
         {
@@ -482,5 +510,3 @@ contact: razorpayPayment.contact,
     };
   }
 }
-
-

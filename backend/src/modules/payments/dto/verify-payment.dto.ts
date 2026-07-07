@@ -1,4 +1,4 @@
-
+﻿
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
@@ -6,6 +6,13 @@ import {
 } from 'class-validator';
 
 export class VerifyPaymentDto {
+  @ApiProperty({
+    example: '507f1f77bcf86cd799439011',
+    description: 'Booking ID',
+  })
+  @IsString()
+  @IsNotEmpty()
+  bookingId: string;
   @ApiProperty({
     example: 'order_Q2d8hQdR2qX2ab',
     description: 'Razorpay Order ID',
