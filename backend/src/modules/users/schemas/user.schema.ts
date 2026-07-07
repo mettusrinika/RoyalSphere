@@ -43,6 +43,12 @@ export class User {
   @Prop({ default: false })
   phoneVerified: boolean;
 
+  @Prop({ trim: true })
+  expoPushToken?: string;
+
+  @Prop()
+  pushTokenUpdatedAt?: Date;
+
   @Prop({ select: false })
   phoneOtpHash?: string;
 

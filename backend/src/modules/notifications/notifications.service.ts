@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import { Notification, NotificationDocument, NotificationType } from './schemas/notification.schema';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { User, UserDocument } from '../users/schemas/user.schema';
 
 @Injectable()
 export class NotificationsService {
@@ -13,6 +14,7 @@ export class NotificationsService {
 
   constructor(
     @InjectModel(Notification.name) private notificationModel: Model<NotificationDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
     private configService: ConfigService,
     private eventEmitter: EventEmitter2,
   ) {
@@ -51,9 +53,112 @@ this.transporter = nodemailer.createTransport({
     this.eventEmitter.emit('notification.created', {
       userId: data.userId.toString(),
       notification,
+    });    void this.sendPushNotification(data.userId.toString(), {
+      title: data.title,
+      body: data.message,
+      data: {
+        notificationId: notification._id.toString(),
+        type: data.type,
+        actionUrl: data.actionUrl ?? '',
+        ...(data.notifData || {}),
+      },
     });
 
     return notification;
+  }
+
+  async registerPushToken(userId: string, expoPushToken: string) {
+    if (
+      !expoPushToken ||
+      !/^ExponentPushToken\[[^\]]+\]$|^ExpoPushToken\[[^\]]+\]$/.test(expoPushToken)
+    ) {
+      throw new Error('Invalid Expo push token');
+    }
+
+    await this.userModel.updateOne(
+      { _id: new Types.ObjectId(userId) },
+      {
+        $set: {
+          expoPushToken,
+          pushTokenUpdatedAt: new Date(),
+        },
+      },
+    );
+
+    return {
+      message: 'Push token registered successfully',
+    };
+  }
+
+  async unregisterPushToken(userId: string) {
+    await this.userModel.updateOne(
+      { _id: new Types.ObjectId(userId) },
+      {
+        $unset: {
+          expoPushToken: 1,
+          pushTokenUpdatedAt: 1,
+        },
+      },
+    );
+
+    return {
+      message: 'Push token removed successfully',
+    };
+  }
+
+  private async sendPushNotification(
+    userId: string,
+    payload: {
+      title: string;
+      body: string;
+      data?: Record<string, any>;
+    },
+  ) {
+    try {
+      const user = await this.userModel
+        .findById(userId)
+        .lean();
+
+      if (!user?.expoPushToken) {
+        return;
+      }
+
+      const response = await fetch(
+        'https://exp.host/--/api/v2/push/send',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Accept-Encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: user.expoPushToken,
+            sound: 'default',
+            title: payload.title,
+            body: payload.body,
+            data: payload.data || {},
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        const responseBody = await response.text();
+
+        this.logger.warn(
+          `Expo push delivery failed for user ${userId}: ${response.status} ${responseBody}`,
+        );
+      }
+    } catch (err) {
+      const error =
+        err instanceof Error
+          ? err
+          : new Error(String(err));
+
+      this.logger.warn(
+        `Push notification delivery failed for user ${userId}: ${error.message}`,
+      );
+    }
   }
 
   async getUserNotifications(userId: string, page = 1, limit = 20) {

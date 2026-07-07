@@ -98,6 +98,10 @@ export const endpoints = {
 
   notifications: () => api.get("/notifications"),
   readAll: () => api.patch("/notifications/read-all"),
+  registerPushToken: (expoPushToken:string) =>
+    api.post("/notifications/push-token", {expoPushToken}),
+  unregisterPushToken: () =>
+    api.delete("/notifications/push-token"),
 
   conversations: () => api.get("/messages/conversations"),
   conversation: (id:string) => api.get(`/messages/conversation/${id}`, {params:{page:1,limit:50}}),
@@ -132,6 +136,3 @@ export const errMsg = (e:any) => {
   if (!e?.response) return "Unable to connect to OMIQORA. Check your connection and try again.";
   return e?.message ?? "Something went wrong";
 };
-
-
-

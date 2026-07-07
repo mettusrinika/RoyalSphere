@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Delete, Param, Query, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Query, Body, UseGuards, Request } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
@@ -23,6 +23,24 @@ export class NotificationsController {
   @Patch('read-all')
   markAllRead(@Request() req) {
     return this.notificationsService.markAllAsRead(req.user._id.toString());
+  }
+
+  @Post('push-token')
+  registerPushToken(
+    @Request() req,
+    @Body() body: { expoPushToken: string },
+  ) {
+    return this.notificationsService.registerPushToken(
+      req.user._id.toString(),
+      body.expoPushToken,
+    );
+  }
+
+  @Delete('push-token')
+  unregisterPushToken(@Request() req) {
+    return this.notificationsService.unregisterPushToken(
+      req.user._id.toString(),
+    );
   }
 
   @Delete(':id')
