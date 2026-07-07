@@ -42,6 +42,9 @@ type FieldProps = {
 
 export function AuthScreen() {
   const [registerMode, setRegisterMode] = useState(false);
+  const [phoneMode, setPhoneMode] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
@@ -49,9 +52,61 @@ export function AuthScreen() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const { login, register, loading } = useSession();
+  const {
+    login,
+    register,
+    requestPhoneOtp,
+    verifyPhoneOtp,
+    loading,
+  } = useSession();
 
   const submit = async () => {
+    if (phoneMode) {
+      if (!phone.trim()) {
+        return Alert.alert(
+          "Mobile number required",
+          "Enter your mobile number."
+        );
+      }
+
+      try {
+        if (!otpSent) {
+          const result =
+            await requestPhoneOtp(phone);
+
+          setOtpSent(true);
+
+          Alert.alert(
+            "OTP sent",
+            result?.message ??
+              "Verification code sent by SMS."
+          );
+
+          return;
+        }
+
+        if (!otp.trim()) {
+          return Alert.alert(
+            "OTP required",
+            "Enter the verification code sent to your phone."
+          );
+        }
+
+        await verifyPhoneOtp(phone, otp);
+
+        return;
+      } catch (error) {
+        Alert.alert(
+          otpSent
+            ? "OTP verification failed"
+            : "Unable to send OTP",
+          apiError(error)
+        );
+
+        return;
+      }
+    }
+
     if (!email.trim() || !password) {
       return Alert.alert(
         "Missing details",
@@ -160,7 +215,7 @@ export function AuthScreen() {
           </View>
 
           <View style={styles.sparkleTwo}>
-            <Text style={styles.sparkleDot}>✦</Text>
+            <Text style={styles.sparkleDot}>âœ¦</Text>
           </View>
 
           <View style={styles.hero}>
@@ -225,57 +280,87 @@ export function AuthScreen() {
                 </>
               )}
 
-              <Field
-                icon={<Mail size={18} color={C.goldLight} />}
-                placeholder="Email address"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                autoComplete="email"
-                textContentType="emailAddress"
-              />
+              {phoneMode ? (
+                <>
+                  <Field
+                    icon={<Phone size={18} color={C.goldLight} />}
+                    placeholder="Mobile number"
+                    value={phone}
+                    onChangeText={value => {
+                      setPhone(value);
+                      setOtpSent(false);
+                      setOtp("");
+                    }}
+                    keyboardType="phone-pad"
+                  />
 
-              {registerMode && (
-                <Field
-                  icon={<Phone size={18} color={C.goldLight} />}
-                  placeholder="Phone (optional)"
-                  value={phone}
-                  onChangeText={setPhone}
-                  keyboardType="phone-pad"
-                />
-              )}
-
-              <View style={styles.field}>
-                <LockKeyhole size={18} color={C.goldLight} />
-
-                <TextInput
-                  style={styles.input}
-                  placeholder="Password"
-                  placeholderTextColor={C.mutedSoft}
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                  autoCapitalize="none"
-                  autoComplete="off"
-                  textContentType="none"
-                />
-
-                <Pressable
-                  hitSlop={12}
-                  onPress={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff size={19} color={C.muted} />
-                  ) : (
-                    <Eye size={19} color={C.muted} />
+                  {otpSent && (
+                    <Field
+                      icon={<LockKeyhole size={18} color={C.goldLight} />}
+                      placeholder="Verification code"
+                      value={otp}
+                      onChangeText={setOtp}
+                      keyboardType="phone-pad"
+                    />
                   )}
-                </Pressable>
-              </View>
+                </>
+              ) : (
+                <>
+                  <Field
+                    icon={<Mail size={18} color={C.goldLight} />}
+                    placeholder="Email address"
+                    value={email}
+                    onChangeText={setEmail}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    autoComplete="email"
+                    textContentType="emailAddress"
+                  />
+
+                  {registerMode && (
+                    <Field
+                      icon={<Phone size={18} color={C.goldLight} />}
+                      placeholder="Phone (optional)"
+                      value={phone}
+                      onChangeText={setPhone}
+                      keyboardType="phone-pad"
+                    />
+                  )}
+
+                  <View style={styles.field}>
+                    <LockKeyhole size={18} color={C.goldLight} />
+
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Password"
+                      placeholderTextColor={C.mutedSoft}
+                      value={password}
+                      onChangeText={setPassword}
+                      secureTextEntry={!showPassword}
+                      autoCapitalize="none"
+                      autoComplete="off"
+                      textContentType="none"
+                    />
+
+                    <Pressable
+                      hitSlop={12}
+                      onPress={() =>
+                        setShowPassword(!showPassword)
+                      }
+                    >
+                      {showPassword ? (
+                        <EyeOff size={19} color={C.muted} />
+                      ) : (
+                        <Eye size={19} color={C.muted} />
+                      )}
+                    </Pressable>
+                  </View>
+                </>
+              )}
 
               {registerMode && (
                 <Text style={styles.hint}>
-                  8+ characters · uppercase · lowercase · number
+                  8+ characters Â· uppercase Â· lowercase Â· number
                 </Text>
               )}
 
@@ -303,20 +388,45 @@ export function AuthScreen() {
                   ) : (
                     <>
                       <Text style={styles.buttonText}>
-                        {registerMode
-                          ? "Create account"
-                          : "Sign in"}
+                        {phoneMode
+                          ? otpSent
+                            ? "Verify OTP"
+                            : "Send OTP"
+                          : registerMode
+                            ? "Create account"
+                            : "Sign in"}
                       </Text>
-                      <Text style={styles.buttonSpark}>✦</Text>
+                      <Text style={styles.buttonSpark}>âœ¦</Text>
                     </>
                   )}
                 </LinearGradient>
               </Pressable>
 
+              {!registerMode && (
+                <Pressable
+                  style={styles.switch}
+                  onPress={() => {
+                    setPhoneMode(!phoneMode);
+                    setOtpSent(false);
+                    setOtp("");
+                    setPassword("");
+                  }}
+                >
+                  <Text style={styles.switchText}>
+                    {phoneMode
+                      ? "Sign in with email and password"
+                      : "Sign in with mobile OTP"}
+                  </Text>
+                </Pressable>
+              )}
+
               <Pressable
                 style={styles.switch}
                 onPress={() => {
                   setRegisterMode(!registerMode);
+                  setPhoneMode(false);
+                  setOtpSent(false);
+                  setOtp("");
                   setPassword("");
                 }}
               >
@@ -335,7 +445,7 @@ export function AuthScreen() {
           </View>
 
           <Text style={styles.footerText}>
-            TRUSTED SERVICES · INTELLIGENTLY CONNECTED
+            TRUSTED SERVICES Â· INTELLIGENTLY CONNECTED
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>
