@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "193178733895",
+    "project_id": "omiqora",
+    "storage_bucket": "omiqora.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:193178733895:android:2d23e7f243d559b2c29062",
+        "android_client_info": {
+          "package_name": "com.omiqora.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMemDmmty9LyMZjycqyd2ir1uBipX_Smw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
