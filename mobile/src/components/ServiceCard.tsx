@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import {
   Image,
   Pressable,
@@ -22,7 +22,7 @@ type Props = {
 };
 
 const money = (value?: number) =>
-  `â‚¹${Number(value ?? 0).toLocaleString("en-IN")}`;
+  `\u20B9${Number(value ?? 0).toLocaleString("en-IN")}`;
 
 const priceType = (value?: string) => {
   switch (value) {
@@ -330,4 +330,3 @@ const styles = StyleSheet.create({
     fontWeight: "900",
   },
 });
-

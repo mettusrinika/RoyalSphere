@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -36,6 +36,8 @@ type FieldProps = {
   onChangeText: (value: string) => void;
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
   keyboardType?: "default" | "email-address" | "phone-pad";
+  autoComplete?: "email" | "off";
+  textContentType?: "emailAddress" | "none";
 };
 
 export function AuthScreen() {
@@ -171,15 +173,7 @@ export function AuthScreen() {
               />
             </View>
 
-            <Text style={styles.brand}>OMIQORA</Text>
 
-            <View style={styles.tagRow}>
-              <View style={styles.tagLine} />
-              <Text style={styles.tag}>
-                ONE PLATFORM · INFINITE POSSIBILITIES
-              </Text>
-              <View style={styles.tagLine} />
-            </View>
           </View>
 
           <View style={styles.cardBorder}>
@@ -238,6 +232,8 @@ export function AuthScreen() {
                 onChangeText={setEmail}
                 autoCapitalize="none"
                 keyboardType="email-address"
+                autoComplete="email"
+                textContentType="emailAddress"
               />
 
               {registerMode && (
@@ -261,6 +257,8 @@ export function AuthScreen() {
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
+                  autoComplete="off"
+                  textContentType="none"
                 />
 
                 <Pressable

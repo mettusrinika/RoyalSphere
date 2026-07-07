@@ -1,4 +1,4 @@
-﻿import * as SecureStore from "expo-secure-store";
+import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
 import { ACCESS_KEY, REFRESH_KEY, api, unwrap } from "../api";
 
@@ -55,9 +55,11 @@ export const useSession = create<State>((set) => ({
     set({loading:true});
     try {
       const data:any = unwrap(await api.post("/auth/login",{email:email.trim().toLowerCase(),password}));
-      await SecureStore.setItemAsync(ACCESS_KEY,data.accessToken);
-      await SecureStore.setItemAsync(REFRESH_KEY,data.refreshToken);
-      await SecureStore.setItemAsync(USER_KEY,JSON.stringify(data.user));
+      await Promise.all([
+        SecureStore.setItemAsync(ACCESS_KEY,data.accessToken),
+        SecureStore.setItemAsync(REFRESH_KEY,data.refreshToken),
+        SecureStore.setItemAsync(USER_KEY,JSON.stringify(data.user)),
+      ]);
       api.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
       set({user:data.user});
     } finally { set({loading:false}); }
@@ -90,4 +92,3 @@ export const useSession = create<State>((set) => ({
     set({user:null});
   },
 }));
-

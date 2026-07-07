@@ -43,7 +43,7 @@ type Props = {
 };
 
 const money = (value?: number) =>
-  `â‚¹${Number(value ?? 0).toLocaleString("en-IN")}`;
+  `\u20B9${Number(value ?? 0).toLocaleString("en-IN")}`;
 
 const priceType = (value?: string) => {
   switch (value) {
@@ -430,7 +430,7 @@ serviceId,
                         }
                         {service.availability
                           ?.endTime
-                          ? ` â€“ ${service.availability.endTime}`
+                          ? ` Ã¢â‚¬â€œ ${service.availability.endTime}`
                           : ""}
                       </Text>
                     </View>
