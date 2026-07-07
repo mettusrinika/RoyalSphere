@@ -33,6 +33,13 @@
     },
     "web": {
       "favicon": "./assets/omiqora-icon.png"
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ee32a5cf-b1f6-4bd5-9da9-bf3696e03e61"
+      }
+    },
+    "owner": "srinikamettu"
   }
 }
