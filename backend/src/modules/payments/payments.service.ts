@@ -1,4 +1,4 @@
-
+﻿
 import {
   Injectable,
   NotFoundException,
@@ -273,7 +273,7 @@ contact: razorpayPayment.contact,
           title:
             'Payment Successful',
 
-          message: `Payment of ₹${booking.amount} for booking ${booking.bookingNumber} was successful.`,
+          message: `Payment of â‚¹${booking.amount} for booking ${booking.bookingNumber} was successful.`,
 
           type:
             NotificationType.PAYMENT_SUCCESS,
@@ -289,7 +289,7 @@ contact: razorpayPayment.contact,
           title:
             'Payment Received',
 
-          message: `Payment received for booking ${booking.bookingNumber}. Vendor payout: ₹${booking.vendorPayout}`,
+          message: `Payment received for booking ${booking.bookingNumber}. Vendor payout: â‚¹${booking.vendorPayout}`,
 
           type:
             NotificationType.PAYMENT_SUCCESS,
@@ -468,7 +468,7 @@ contact: razorpayPayment.contact,
       {
         userId: payment.customerId,
         title: 'Refund Processed',
-        message: `₹${amount} has been refunded successfully.`,
+        message: `â‚¹${amount} has been refunded successfully.`,
         type:
           NotificationType.PAYMENT_SUCCESS,
         actionUrl: `/payments`,
@@ -482,4 +482,5 @@ contact: razorpayPayment.contact,
     };
   }
 }
+
 
