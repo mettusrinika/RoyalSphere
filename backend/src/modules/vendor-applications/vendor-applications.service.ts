@@ -129,6 +129,7 @@ export class VendorApplicationsService {
       'shop_photo',
       'portfolio',
       'work_proof',
+      'address_proof',
       'other',
     ];
 

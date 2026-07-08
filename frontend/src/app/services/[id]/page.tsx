@@ -23,7 +23,9 @@ const { data: reviewData } = useServiceReviews(id);
   const { mutate: toggleSaved } = useToggleSaved();
   const [activeImage, setActiveImage] = useState(0);
   const [showBookingForm, setShowBookingForm] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const [bookingCoords, setBookingCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [locationBusy, setLocationBusy] = useState(false);
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
   if (isLoading) return <div className="min-h-screen bg-background"><Navbar /><PageLoader /></div>;
   if (!service) return <div className="min-h-screen flex items-center justify-center"><p>Service not found</p></div>;
@@ -37,13 +39,15 @@ const { data: reviewData } = useServiceReviews(id);
   {
     serviceId: id,
     eventDate: data.eventDate,
+    eventEndDate: data.eventEndDate || data.eventDate,
     eventLocation: data.eventLocation,
+    eventLatitude: bookingCoords?.latitude,
+    eventLongitude: bookingCoords?.longitude,
     eventDetails: {
       eventType: data.eventType,
       guestCount: Number(data.guestCount),
       specialRequirements: data.specialRequirements,
     },
-    amount: service.basePrice,
   },
   {
     onSuccess: () => {
@@ -58,6 +62,38 @@ const { data: reviewData } = useServiceReviews(id);
     },
   },
 );
+  };
+
+  const useBookingLocation = () => {
+    if (!navigator.geolocation) return toast.error('Location is not supported by this browser.');
+    setLocationBusy(true);
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      setBookingCoords({ latitude, longitude });
+      try {
+        const result = await (await import('@/lib/api')).platformApi.checkServiceability(id, latitude, longitude);
+        const serviceability: any = result.data;
+        if (serviceability?.serviceable === false) toast.error(`Outside service area${serviceability.distanceKm ? ` (${serviceability.distanceKm} km away)` : ''}.`);
+        else if (serviceability?.serviceable === true) toast.success('Your location is serviceable.');
+        else toast('Vendor geo serviceability is not configured yet.');
+
+        const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+        if (key) {
+          const response = await fetch(`https://geocode.googleapis.com/v4beta/geocode/location/${latitude},${longitude}?key=${encodeURIComponent(key)}`);
+          const json: any = await response.json();
+          const formatted = json?.results?.[0]?.formattedAddress || json?.results?.[0]?.formatted_address;
+          if (formatted) setValue('eventLocation', formatted);
+        }
+      } catch (error: any) {
+        toast.error(error?.response?.data?.message || 'Unable to validate serviceability.');
+      } finally {
+        setLocationBusy(false);
+      }
+    }, (error) => {
+      setLocationBusy(false);
+      toast.error(error.message || 'Unable to access location.');
+    }, { enableHighAccuracy: true });
   };
 
   return (
@@ -243,12 +279,21 @@ const { data: reviewData } = useServiceReviews(id);
               ) : (
                 <form onSubmit={handleSubmit(onBook)} className="space-y-3">
                   <div>
-                    <label className="label text-xs">Event Date *</label>
+                    <label className="label text-xs">From Date *</label>
                     <input {...register('eventDate', { required: true })} type="date" className="input text-sm" min={new Date().toISOString().split('T')[0]} />
                   </div>
                   <div>
+                    <label className="label text-xs">To Date</label>
+                    <input {...register('eventEndDate')} type="date" className="input text-sm" min={new Date().toISOString().split('T')[0]} />
+                    <p className="text-xs text-muted mt-1">Leave blank for a one-day booking. The backend calculates the final amount.</p>
+                  </div>
+                  <div>
                     <label className="label text-xs">Event Location *</label>
-                    <input {...register('eventLocation', { required: true })} placeholder="e.g. Taj Hotel, Mumbai" className="input text-sm" />
+                    <input {...register('eventLocation', { required: true })} placeholder="Venue or address" className="input text-sm" />
+                    <button type="button" onClick={useBookingLocation} disabled={locationBusy} className="btn-secondary w-full mt-2">
+                      {locationBusy ? 'Checking location...' : 'Use my location & check serviceability'}
+                    </button>
+                    {bookingCoords && <p className="text-xs text-green-600 mt-1">Location coordinates captured.</p>}
                   </div>
                   <div>
                     <label className="label text-xs">Event Type</label>

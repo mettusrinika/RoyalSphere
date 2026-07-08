@@ -1,4 +1,4 @@
-﻿import React,{useState} from "react";
+import React,{useState} from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as Location from "expo-location";
 import * as Linking from "expo-linking";
@@ -36,7 +36,7 @@ export function BookingCreateScreen({service,onBack,onCreated}:{service:any;onBa
   setBusy(true);
   try{
    if(coords){const result:any=unwrap(await endpoints.checkServiceability(serviceId,coords.latitude,coords.longitude));if(result?.serviceable===false)throw new Error(result?.reason??"Service is not available at this location.");}
-   const booking:any=unwrap(await endpoints.createBooking({serviceId,eventDate:fromDate.toISOString(),eventEndDate:end.toISOString(),eventLocation:eventLocation.trim(),eventDetails:eventDetails.trim()}));
+   const booking:any=unwrap(await endpoints.createBooking({serviceId,eventDate:fromDate.toISOString(),eventEndDate:end.toISOString(),eventLocation:eventLocation.trim(),eventLatitude:coords?.latitude,eventLongitude:coords?.longitude,eventDetails:eventDetails.trim()}));
    const id=String(booking?._id??booking?.id??"");if(!id)throw new Error("Booking id was not returned.");onCreated(id);
   }catch(e){Alert.alert("Unable to create booking",errMsg(e));}finally{setBusy(false);}
  };

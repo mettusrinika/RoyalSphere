@@ -87,6 +87,12 @@ export class Booking {
   })
   eventLocation: string;
 
+  @Prop()
+  eventLatitude?: number;
+
+  @Prop()
+  eventLongitude?: number;
+
   @Prop({
     type: {
       eventType: String,

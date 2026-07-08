@@ -18,6 +18,14 @@ export class CreateVendorApplicationDto {
 
   @IsString()
   @IsNotEmpty()
+  vendorType: 'individual' | 'business';
+
+  @IsOptional()
+  @IsString()
+  businessRegistrationNumber?: string;
+
+  @IsString()
+  @IsNotEmpty()
   @MinLength(20)
   @MaxLength(1000)
   businessDescription: string;

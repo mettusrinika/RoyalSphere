@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import Twilio from 'twilio';
+import Twilio = require('twilio');
 import {
   User,
   UserDocument,

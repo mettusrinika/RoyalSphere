@@ -43,6 +43,35 @@ export class BookingsService {
     });
     if (overlapping) throw new BadRequestException('This service already has an overlapping booking for the selected date range');
 
+    const eventLatitude = Number(dto.eventLatitude);
+    const eventLongitude = Number(dto.eventLongitude);
+    const serviceLatitude = Number(service.location?.latitude);
+    const serviceLongitude = Number(service.location?.longitude);
+    const serviceRadiusKm = Number(service.location?.serviceRadius ?? 0);
+
+    if (
+      Number.isFinite(serviceLatitude) &&
+      Number.isFinite(serviceLongitude) &&
+      serviceRadiusKm > 0
+    ) {
+      if (!Number.isFinite(eventLatitude) || !Number.isFinite(eventLongitude)) {
+        throw new BadRequestException('Location coordinates are required to validate serviceability for this service');
+      }
+      const toRad = (value: number) => value * Math.PI / 180;
+      const earthKm = 6371;
+      const dLat = toRad(eventLatitude - serviceLatitude);
+      const dLng = toRad(eventLongitude - serviceLongitude);
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(serviceLatitude)) *
+        Math.cos(toRad(eventLatitude)) *
+        Math.sin(dLng / 2) ** 2;
+      const distanceKm = earthKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      if (distanceKm > serviceRadiusKm) {
+        throw new BadRequestException(`Selected location is outside the vendor service radius (${distanceKm.toFixed(2)} km away)`);
+      }
+    }
+
     const basePrice = Number(service.basePrice);
     if (!Number.isFinite(basePrice) || basePrice <= 0) throw new BadRequestException('Service price is invalid');
     const inclusiveDays = Math.floor((toDate.getTime() - fromDate.getTime()) / 86400000) + 1;
@@ -57,6 +86,8 @@ export class BookingsService {
       eventDate: fromDate,
       eventEndDate: toDate,
       eventLocation: String(dto.eventLocation ?? '').trim(),
+      eventLatitude: Number.isFinite(eventLatitude) ? eventLatitude : undefined,
+      eventLongitude: Number.isFinite(eventLongitude) ? eventLongitude : undefined,
       eventDetails: typeof dto.eventDetails === 'object' ? dto.eventDetails : { specialRequirements: String(dto.eventDetails ?? '') },
       amount: authoritativeAmount,
       commission: authoritativeAmount * 0.1,

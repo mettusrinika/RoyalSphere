@@ -18,6 +18,12 @@ export class VendorApplication {
   @Prop({ required: true })
   businessName: string;
 
+  @Prop({ enum: ['individual', 'business'], required: true, default: 'individual' })
+  vendorType: 'individual' | 'business';
+
+  @Prop()
+  businessRegistrationNumber?: string;
+
   @Prop({ required: true })
   businessDescription: string;
 
