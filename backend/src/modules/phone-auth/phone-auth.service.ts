@@ -144,11 +144,28 @@ export class PhoneAuthService {
       );
     }
 
-    const user = await this.users
-      .findOne({ phone })
+    const localPhone = phone.replace(/^\+91/, '');
+
+    let user = await this.users
+      .findOne({
+        phone: { $in: [phone, localPhone] },
+        email: {
+          $not: /@pending\.omiqora\.local$/i,
+        },
+      })
       .select(
         '+phoneOtpAttempts +phoneOtpLastSentAt +refreshTokens',
       );
+
+    if (!user) {
+      user = await this.users
+        .findOne({
+          phone: { $in: [phone, localPhone] },
+        })
+        .select(
+          '+phoneOtpAttempts +phoneOtpLastSentAt +refreshTokens',
+        );
+    }
 
     if (!user?.phoneOtpLastSentAt) {
       throw new UnauthorizedException(
