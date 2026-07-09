@@ -70,11 +70,28 @@ export class PhoneAuthService {
   async requestOtp(rawPhone: string) {
     const phone = this.normalize(rawPhone);
 
+    const localPhone = phone.replace(/^\+91/, '');
+
     let user = await this.users
-      .findOne({ phone })
+      .findOne({
+        phone: { $in: [phone, localPhone] },
+        email: {
+          $not: /@pending\.omiqora\.local$/i,
+        },
+      })
       .select(
         '+phoneOtpAttempts +phoneOtpLastSentAt',
       );
+
+    if (!user) {
+      user = await this.users
+        .findOne({
+          phone: { $in: [phone, localPhone] },
+        })
+        .select(
+          '+phoneOtpAttempts +phoneOtpLastSentAt',
+        );
+    }
 
     if (
       user?.phoneOtpLastSentAt &&
