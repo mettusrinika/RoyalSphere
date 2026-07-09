@@ -5,6 +5,7 @@ import { BookingsService } from './bookings.service';
 import { Booking, BookingSchema } from './schemas/booking.schema';
 import { Service, ServiceSchema } from '../services/schemas/service.schema';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { PlatformReadinessModule } from '../platform-readiness/platform-readiness.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
       { name: Service.name, schema: ServiceSchema },
     ]),
     NotificationsModule,
+    PlatformReadinessModule,
   ],
   controllers: [BookingsController],
   providers: [BookingsService],

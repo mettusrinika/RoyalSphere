@@ -76,7 +76,7 @@ const { data: reviewData } = useServiceReviews(id);
         const serviceability: any = result.data;
         if (serviceability?.serviceable === false) toast.error(`Outside service area${serviceability.distanceKm ? ` (${serviceability.distanceKm} km away)` : ''}.`);
         else if (serviceability?.serviceable === true) toast.success('Your location is serviceable.');
-        else toast('Vendor geo serviceability is not configured yet.');
+        else toast('This vendor has not configured their service area yet.');
 
         const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
         if (key) {

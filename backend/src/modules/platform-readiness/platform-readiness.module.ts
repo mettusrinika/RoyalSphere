@@ -17,5 +17,6 @@ import { Service, ServiceSchema } from '../services/schemas/service.schema';
   ],
   controllers: [PlatformReadinessController],
   providers: [PlatformReadinessService],
+  exports: [PlatformReadinessService],
 })
 export class PlatformReadinessModule {}

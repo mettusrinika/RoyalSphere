@@ -8,6 +8,7 @@ import { Booking, BookingDocument, BookingStatus } from './schemas/booking.schem
 import { Service, ServiceDocument } from '../services/schemas/service.schema';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../notifications/schemas/notification.schema';
+import { PlatformReadinessService } from '../platform-readiness/platform-readiness.service';
 
 @Injectable()
 export class BookingsService {
@@ -15,6 +16,7 @@ export class BookingsService {
     @InjectModel(Booking.name) private bookingModel: Model<BookingDocument>,
     @InjectModel(Service.name) private serviceModel: Model<ServiceDocument>,
     private notificationsService: NotificationsService,
+    private platformReadinessService: PlatformReadinessService,
   ) {}
 
   async createBooking(customerId: string, dto: any) {
@@ -45,30 +47,22 @@ export class BookingsService {
 
     const eventLatitude = Number(dto.eventLatitude);
     const eventLongitude = Number(dto.eventLongitude);
-    const serviceLatitude = Number(service.location?.latitude);
-    const serviceLongitude = Number(service.location?.longitude);
-    const serviceRadiusKm = Number(service.location?.serviceRadius ?? 0);
+    if (Number.isFinite(eventLatitude) && Number.isFinite(eventLongitude)) {
+      const serviceability = await this.platformReadinessService.checkServiceability(
+        dto.serviceId,
+        eventLatitude,
+        eventLongitude,
+      );
 
-    if (
-      Number.isFinite(serviceLatitude) &&
-      Number.isFinite(serviceLongitude) &&
-      serviceRadiusKm > 0
-    ) {
-      if (!Number.isFinite(eventLatitude) || !Number.isFinite(eventLongitude)) {
-        throw new BadRequestException('Location coordinates are required to validate serviceability for this service');
+      if (serviceability.configured && serviceability.serviceable === false) {
+        throw new BadRequestException(
+          `Selected location is outside the vendor service radius (${serviceability.distanceKm?.toFixed(2)} km away)`,
+        );
       }
-      const toRad = (value: number) => value * Math.PI / 180;
-      const earthKm = 6371;
-      const dLat = toRad(eventLatitude - serviceLatitude);
-      const dLng = toRad(eventLongitude - serviceLongitude);
-      const a =
-        Math.sin(dLat / 2) ** 2 +
-        Math.cos(toRad(serviceLatitude)) *
-        Math.cos(toRad(eventLatitude)) *
-        Math.sin(dLng / 2) ** 2;
-      const distanceKm = earthKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      if (distanceKm > serviceRadiusKm) {
-        throw new BadRequestException(`Selected location is outside the vendor service radius (${distanceKm.toFixed(2)} km away)`);
+    } else {
+      const geo = await this.platformReadinessService.resolveGeoConfiguration(dto.serviceId);
+      if (geo.configured) {
+        throw new BadRequestException('Location coordinates are required to validate serviceability for this service');
       }
     }
 

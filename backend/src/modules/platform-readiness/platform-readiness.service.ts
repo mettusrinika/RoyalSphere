@@ -89,39 +89,87 @@ export class PlatformReadinessService {
     };
   }
 
+  async resolveGeoConfiguration(serviceId: string) {
+    const service = await this.services.findById(serviceId);
+    if (!service) throw new NotFoundException('Service not found');
+
+    const serviceLat = Number(service.location?.latitude);
+    const serviceLng = Number(service.location?.longitude);
+    const serviceRadius = Number(service.location?.serviceRadius ?? 0);
+
+    if (Number.isFinite(serviceLat) && Number.isFinite(serviceLng) && serviceRadius > 0) {
+      return {
+        configured: true as const,
+        source: 'service' as const,
+        latitude: serviceLat,
+        longitude: serviceLng,
+        serviceRadiusKm: serviceRadius,
+      };
+    }
+
+    const vendorApplication = await this.vendors.findOne({
+      userId: service.vendorId,
+      status: 'approved',
+    });
+
+    const vendorLat = Number(vendorApplication?.serviceLocation?.latitude);
+    const vendorLng = Number(vendorApplication?.serviceLocation?.longitude);
+    const vendorRadius = Number(vendorApplication?.serviceLocation?.serviceRadiusKm ?? 0);
+
+    if (Number.isFinite(vendorLat) && Number.isFinite(vendorLng) && vendorRadius > 0) {
+      return {
+        configured: true as const,
+        source: 'vendor_application' as const,
+        latitude: vendorLat,
+        longitude: vendorLng,
+        serviceRadiusKm: vendorRadius,
+      };
+    }
+
+    return {
+      configured: false as const,
+      source: 'unconfigured' as const,
+    };
+  }
+
   async checkServiceability(serviceId: string, latitude: number, longitude: number) {
     if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
       throw new BadRequestException('Valid latitude and longitude are required');
     }
-    const service = await this.services.findById(serviceId);
-    if (!service) throw new NotFoundException('Service not found');
 
-    const lat = service.location?.latitude;
-    const lng = service.location?.longitude;
-    const radius = service.location?.serviceRadius ?? 0;
+    const geo = await this.resolveGeoConfiguration(serviceId);
 
-    if (!Number.isFinite(lat) || !Number.isFinite(lng) || radius <= 0) {
+    if (!geo.configured) {
       return {
         serviceable: null,
+        configured: false,
+        source: geo.source,
         reason: 'Vendor has not configured geo serviceability',
       };
     }
 
+    const latitudeOrigin = geo.latitude;
+    const longitudeOrigin = geo.longitude;
+    const serviceRadiusKm = geo.serviceRadiusKm;
+    const source = geo.source;
+
     const toRad = (value: number) => value * Math.PI / 180;
     const earthKm = 6371;
-    const dLat = toRad(latitude - Number(lat));
-    const dLng = toRad(longitude - Number(lng));
+    const dLat = toRad(latitude - latitudeOrigin);
+    const dLng = toRad(longitude - longitudeOrigin);
     const a =
       Math.sin(dLat / 2) ** 2 +
-      Math.cos(toRad(Number(lat))) *
+      Math.cos(toRad(latitudeOrigin)) *
       Math.cos(toRad(latitude)) *
       Math.sin(dLng / 2) ** 2;
     const distanceKm = earthKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     return {
-      serviceable: distanceKm <= radius,
+      serviceable: distanceKm <= serviceRadiusKm,
+      configured: true,
+      source,
       distanceKm: Number(distanceKm.toFixed(2)),
-      serviceRadiusKm: radius,
+      serviceRadiusKm,
     };
   }
 }

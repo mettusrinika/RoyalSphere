@@ -24,7 +24,7 @@ export function BookingCreateScreen({service,onBack,onCreated}:{service:any;onBa
    const result:any=unwrap(await endpoints.checkServiceability(serviceId,point.latitude,point.longitude));
    const address=await Location.reverseGeocodeAsync(point);
    const a=address[0]; if(a)setEventLocation([a.name,a.street,a.district,a.city,a.region,a.postalCode].filter(Boolean).join(", "));
-   Alert.alert(result?.serviceable?"Service available":"Outside service area",result?.reason??(result?.serviceable?"This service can serve your location.":"This service is not available at your location."));
+   Alert.alert(result?.serviceable===true?"Service available":result?.serviceable===false?"Outside service area":"Service area not configured",result?.serviceable===null?"This vendor has not configured their service area yet.":result?.reason??(result?.serviceable?"This service can serve your location.":"This service is not available at your location."));
   }catch(e){Alert.alert("Location check failed",errMsg(e));}
  };
  const submit=async()=>{

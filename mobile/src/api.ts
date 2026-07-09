@@ -113,6 +113,9 @@ export const endpoints = {
   createReview: (d:any) => api.post("/reviews", d),
 
   customerOverview: () => api.get("/analytics/customer/overview"),
+  adminOverview: () => api.get("/analytics/admin/overview"),
+  adminVendorApplications: () => api.get("/vendor-applications"),
+  adminBookings: () => api.get("/bookings/admin/all"),
   vendorOverview: () => api.get("/analytics/vendor/overview"),
   myServices: () => api.get("/services/my-services"),
   vendorApplication: () => api.get("/vendor-applications/my-application"),
