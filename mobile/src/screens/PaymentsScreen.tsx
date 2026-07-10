@@ -31,9 +31,9 @@ import { OMIQORA } from "../theme";
 const C = OMIQORA.colors;
 
 export function PaymentsScreen({
-  onBack,
+  onBack,onOpen,
 }: {
-  onBack: () => void;
+  onBack: () => void; onOpen:(id:string)=>void;
 }) {
   const [
     items,
@@ -123,12 +123,11 @@ export function PaymentsScreen({
           </Text>
 
           <Text style={styles.head}>
-            Wallet & payment activity
+            Payments & transactions
           </Text>
 
           <Text style={styles.lead}>
-            Real transactions returned
-            by your OMIQORA backend.
+            Open any transaction for its booking, date, time, references and payout breakdown.
           </Text>
 
           {!!error && (
@@ -162,8 +161,9 @@ export function PaymentsScreen({
             </View>
           ) : (
             items.map((payment) => (
-              <View
+              <Pressable
                 style={styles.card}
+                onPress={()=>onOpen(String(payment._id??payment.id))}
                 key={String(
                   payment._id ??
                     payment.id,
@@ -226,7 +226,7 @@ export function PaymentsScreen({
                       )
                     : ""}
                 </Text>
-              </View>
+              </Pressable>
             ))
           )}
         </ScrollView>

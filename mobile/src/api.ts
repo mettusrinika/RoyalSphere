@@ -92,6 +92,7 @@ export const endpoints = {
   cancelBooking: (id:string,reason:string) => api.patch(`/bookings/${id}/cancel`, {reason}),
 
   payments: () => api.get("/payments/history"),
+  payment: (id:string) => api.get(`/payments/${id}`),
   createOrder: (id:string) => api.post(`/payments/create-order/${id}`),
   createPaymentOrder: (id:string) => api.post(`/payments/create-order/${id}`),
   verifyPayment: (d:any) => api.post("/payments/verify", d),
@@ -108,6 +109,9 @@ export const endpoints = {
   conversation: (id:string) => api.get(`/messages/conversation/${id}`, {params:{page:1,limit:50}}),
   createConversation: (bookingId:string) => api.post(`/messages/conversation/${bookingId}`),
   sendMessage: (id:string,content:string) => api.post(`/messages/send/${id}`, {content,type:"text"}),
+  uploadVendorDocument: (form:FormData) => api.post("/vendor-applications/upload-document", form),
+  uploadServiceImages: (id:string,form:FormData) => api.post(`/services/${id}/images`, form),
+  deleteServiceImage: (id:string,index:number) => api.delete(`/services/${id}/images/${index}`),
 
   reviews: (id:string) => api.get(`/reviews/service/${id}`),
   createReview: (d:any) => api.post("/reviews", d),
@@ -155,7 +159,7 @@ export const endpoints = {
   adminApproveService: (id:string) => api.patch(`/services/${id}/approve`),
   adminRejectService: (id:string,reason:string) => api.patch(`/services/${id}/reject`, {reason}),
   adminPaymentList: () => api.get("/payments/admin/all"),
-  adminRefund: (id:string,reason:string) => api.post(`/payments/refund/${id}`, {reason}),
+  adminRefund: (id:string,amount:number,reason:string) => api.post(`/payments/refund/${id}`, {amount,reason}),
   createCategory: (d:any) => api.post("/categories", d),
   updateCategory: (id:string,d:any) => api.put(`/categories/${id}`, d),
   deleteCategory: (id:string) => api.delete(`/categories/${id}`),
@@ -184,10 +188,14 @@ export const endpoints = {
 
 export const errMsg = (e:any) => {
   const status = Number(e?.response?.status ?? 0);
-  if (!e?.response) return "We couldn't reach OMIQORA right now. Please check your connection and retry.";
-  if (status === 401) return "Your session has expired. Please sign in again.";
-  if (status === 403) return "This action is not available for your account.";
-  if (status === 404) return "We couldn't find that information. Pull to refresh and try again.";
-  if (status >= 500) return "OMIQORA is temporarily unavailable. Please retry in a moment.";
+  const raw = e?.response?.data?.message ?? e?.response?.data?.error;
+  const message = Array.isArray(raw) ? raw.join("\n") : typeof raw === "string" ? raw : "";
+  if (!e?.response) return "We couldn't reach OMIQORA right now. Check your connection and try again.";
+  if (message) return message;
+  if (status === 401) return "Please sign in and try again.";
+  if (status === 403) return "Your account does not have access to this action.";
+  if (status === 404) return "We couldn't find this item. Refresh and try again.";
+  if (status === 409) return "This action conflicts with the current account or application status.";
+  if (status >= 500) return "OMIQORA is temporarily unavailable. Please try again shortly.";
   return "We couldn't complete that action. Check the details and try again.";
 };

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { v2 as cloudinary } from 'cloudinary';
@@ -271,64 +271,27 @@ async uploadImages(
   vendorId: string,
   files: Express.Multer.File[],
 ) {
-  console.log('Uploading images...');
-  console.log('Service ID:', id);
-  console.log('Vendor ID:', vendorId);
-  console.log('Files:', files?.length);
-
   const service = await this.serviceModel.findById(id);
-
-  if (!service) {
-    throw new NotFoundException('Service not found');
+  if (!service) throw new NotFoundException('Service not found');
+  if (service.vendorId.toString() !== vendorId) throw new ForbiddenException('Not your service');
+  if (!files?.length) throw new BadRequestException('Select at least one image');
+  const allowed = new Set(['image/jpeg','image/png','image/webp']);
+  for (const file of files) {
+    if (!allowed.has(file.mimetype)) throw new BadRequestException('Only JPG, PNG and WEBP service images are allowed');
+    if (file.size > 10 * 1024 * 1024) throw new BadRequestException('Each service image must be under 10MB');
   }
-
-  if (service.vendorId.toString() !== vendorId) {
-    throw new ForbiddenException('Not your service');
-  }
-
-  if (!files || files.length === 0) {
-    throw new NotFoundException('No files uploaded');
-  }
-
-  try {
-    const uploads = await Promise.all(
-      files.map(
-        file =>
-          new Promise<{ url: string; publicId: string }>(
-            (resolve, reject) => {
-              const stream = cloudinary.uploader.upload_stream(
-                {
-                  folder: 'omiqora/services',
-                },
-                (error, result) => {
-                  if (error) {
-                    console.error(error);
-                    reject(error);
-                  } else {
-                    resolve({
-                      url: result!.secure_url,
-                      publicId: result!.public_id,
-                    });
-                  }
-                },
-              );
-
-              stream.end(file.buffer);
-            },
-          ),
-      ),
-    );
-
-    service.images.push(...uploads.map(u => u.url));
-    service.imagePublicIds.push(...uploads.map(u => u.publicId));
-
-    await service.save();
-
-    return service;
-  } catch (error) {
-    console.error('Cloudinary Upload Error:', error);
-    throw error;
-  }
+  if ((service.images?.length ?? 0) + files.length > 12) throw new BadRequestException('A service can have up to 12 images');
+  const uploads = await Promise.all(files.map(file => new Promise<{url:string;publicId:string}>((resolve,reject)=>{
+    const stream=cloudinary.uploader.upload_stream({folder:'omiqora/services',resource_type:'image'},(error,result)=>{
+      if(error||!result)return reject(error??new Error('Image upload failed'));
+      resolve({url:result.secure_url,publicId:result.public_id});
+    });
+    stream.end(file.buffer);
+  })));
+  service.images.push(...uploads.map(x=>x.url));
+  service.imagePublicIds.push(...uploads.map(x=>x.publicId));
+  await service.save();
+  return service;
 }
 async deleteImage(
   serviceId: string,

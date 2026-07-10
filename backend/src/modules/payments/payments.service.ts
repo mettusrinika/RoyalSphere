@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
   Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -380,6 +381,20 @@ contact: razorpayPayment.contact,
       page,
       totalPages: Math.ceil(total / limit),
     };
+  }
+
+  async getPaymentDetail(paymentId: string, userId: string, role: string) {
+    if (!Types.ObjectId.isValid(paymentId)) throw new BadRequestException('Invalid payment ID');
+    const payment: any = await this.paymentModel.findById(paymentId)
+      .populate({ path: 'bookingId', select: 'bookingNumber eventDate eventEndDate eventLocation serviceId amount paymentStatus status', populate: { path: 'serviceId', select: 'name images priceType basePrice' } })
+      .populate('customerId', 'firstName lastName email')
+      .populate('vendorId', 'firstName lastName vendorProfile')
+      .lean();
+    if (!payment) throw new NotFoundException('Payment not found');
+    const customerId = payment.customerId?._id?.toString?.() ?? payment.customerId?.toString?.();
+    const vendorId = payment.vendorId?._id?.toString?.() ?? payment.vendorId?.toString?.();
+    if (role !== 'admin' && customerId !== userId && vendorId !== userId) throw new ForbiddenException('You cannot access this payment');
+    return payment;
   }
 
   async getAdminPayments(

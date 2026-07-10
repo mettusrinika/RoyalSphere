@@ -22,6 +22,8 @@ import {
   RefreshCw,
   XCircle,
   Star,
+  MessageCircle,
+  LifeBuoy,
 } from "lucide-react-native";
 
 import {
@@ -39,6 +41,7 @@ type Props = {
   onBack: () => void;
   onPayments: () => void;
   onReview: (bookingId: string) => void;
+  onChat: (conversationId:string) => void;
 };
 
 export function BookingDetailScreen({
@@ -46,6 +49,7 @@ export function BookingDetailScreen({
   onBack,
   onPayments,
   onReview,
+  onChat,
 }: Props) {
   const [
     booking,
@@ -154,6 +158,16 @@ Fake payment success is not used.`,
         setPaying(false);
       }
     };
+
+
+  const openChat = async () => {
+    try {
+      const conversation:any = unwrap(await endpoints.createConversation(bookingId));
+      const conversationId=String(conversation?.conversationId??conversation?._id??conversation?.id??"");
+      if(!conversationId) throw new Error("Conversation was not created.");
+      onChat(conversationId);
+    } catch(error){ Alert.alert("Messages",errMsg(error)); }
+  };
 
   if (loading) {
     return (
@@ -342,6 +356,16 @@ Fake payment success is not used.`,
             <Text style={styles.secondaryText}>Review this service</Text>
           </Pressable>
         )}
+
+        <Pressable style={styles.secondary} onPress={openChat}>
+          <MessageCircle size={17} color={C.gold}/>
+          <Text style={styles.secondaryText}>Message about this booking</Text>
+        </Pressable>
+
+        <View style={styles.card}>
+          <Text style={styles.label}>SERVICE JOURNEY</Text>
+          {(booking.timeline?.length?booking.timeline:[{status:"requested",updatedAt:booking.createdAt},{status:booking.status,updatedAt:booking.updatedAt}]).map((step:any,index:number)=><View style={styles.line} key={`${step.status}-${index}`}><View style={{width:10,height:10,borderRadius:5,backgroundColor:C.gold}}/><Text style={styles.value}>{String(step.status??"update").replaceAll("_"," ").toUpperCase()}{"\n"}{step.updatedAt?new Date(step.updatedAt).toLocaleString("en-IN"):""}</Text></View>)}
+        </View>
 
         <Pressable
           style={styles.secondary}

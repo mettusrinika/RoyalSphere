@@ -74,6 +74,18 @@ export class PaymentsController {
     );
   }
 
+  @Get(':paymentId')
+  getPaymentDetail(
+    @Request() req,
+    @Param('paymentId') paymentId: string,
+  ) {
+    return this.paymentsService.getPaymentDetail(
+      paymentId,
+      req.user._id.toString(),
+      req.user.role,
+    );
+  }
+
   @Post('refund/:paymentId')
   @Roles('admin')
   refund(

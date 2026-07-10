@@ -149,7 +149,7 @@ export class ServicesController {
   @Roles('vendor')
   @ApiBearerAuth()
   @UseInterceptors(
-    FilesInterceptor('files', 6),
+    FilesInterceptor('files', 12),
   )
   uploadImages(
     @Request() req,
