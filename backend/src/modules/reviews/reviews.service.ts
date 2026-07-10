@@ -470,6 +470,17 @@ export class ReviewsService {
     return review;
   }
 
+  async getMyReviews(customerId: string) {
+    const customerObjectId = this.objectId(customerId, 'customer ID');
+
+    return this.reviewModel
+      .find({ customerId: customerObjectId })
+      .populate('serviceId', 'name images')
+      .populate('vendorId', 'firstName lastName businessName')
+      .sort({ createdAt: -1 })
+      .lean();
+  }
+
   async getServiceReviews(
     serviceId: string,
     query: ReviewQueryDto,

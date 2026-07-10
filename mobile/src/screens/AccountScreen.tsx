@@ -1,6 +1,6 @@
 import React,{useEffect,useState} from "react";
 import {ActivityIndicator,Pressable,ScrollView,StyleSheet,Text,TextInput,View} from "react-native";
-import {Bell,Bookmark,BriefcaseBusiness,CreditCard,LogOut,MessageCircle,Save,ShieldCheck,WalletCards} from "lucide-react-native";
+import {Bell,Bookmark,BriefcaseBusiness,CreditCard,FileCheck2,LogOut,MapPin,MessageCircle,Save,ShieldCheck,WalletCards} from "lucide-react-native";
 import {endpoints,errMsg} from "../api";
 import {useSession} from "../stores/session";
 import {OMIQORA} from "../theme";
@@ -14,6 +14,7 @@ type Props={
  onSaved:()=>void;
  onPayments:()=>void;
  onAdmin:()=>void;
+ onOperations:()=>void;
 };
 
 export function AccountScreen({
@@ -23,11 +24,15 @@ export function AccountScreen({
  onSaved,
  onPayments,
  onAdmin,
+ onOperations,
 }:Props){
  const {user,logout,refreshUser}=useSession();
  const [firstName,setFirstName]=useState(user?.firstName??"");
  const [lastName,setLastName]=useState(user?.lastName??"");
  const [phone,setPhone]=useState(user?.phone??"");
+ const [city,setCity]=useState(user?.address?.city??"");
+ const [state,setState]=useState(user?.address?.state??"");
+ const [pincode,setPincode]=useState(user?.address?.pincode??"");
  const [busy,setBusy]=useState(false);
  const [message,setMessage]=useState("");
 
@@ -39,6 +44,9 @@ export function AccountScreen({
   setFirstName(user?.firstName??"");
   setLastName(user?.lastName??"");
   setPhone(user?.phone??"");
+  setCity(user?.address?.city??"");
+  setState(user?.address?.state??"");
+  setPincode(user?.address?.pincode??"");
  },[user]);
 
  const save=async()=>{
@@ -49,6 +57,7 @@ export function AccountScreen({
     firstName:firstName.trim(),
     lastName:lastName.trim(),
     phone:phone.trim(),
+    address:{city:city.trim(),state:state.trim(),pincode:pincode.trim()},
    });
    await refreshUser();
    setMessage("Profile updated.");
@@ -99,6 +108,7 @@ export function AccountScreen({
      </>
     ):(
      <>
+      <Action icon={<FileCheck2 size={18} color={C.gold}/>} label="My activity center" onPress={onOperations}/>
       <Action icon={<WalletCards size={18} color={C.gold}/>} label="Wallet and payments" onPress={onPayments}/>
       <Action icon={<Bookmark size={18} color={C.gold}/>} label="Saved services" onPress={onSaved}/>
       <Action icon={<MessageCircle size={18} color={C.gold}/>} label="Messages" onPress={onMessages}/>
@@ -113,6 +123,10 @@ export function AccountScreen({
    <TextInput style={s.input} value={firstName} onChangeText={setFirstName} placeholder="First name" placeholderTextColor={C.mutedSoft}/>
    <TextInput style={s.input} value={lastName} onChangeText={setLastName} placeholder="Last name" placeholderTextColor={C.mutedSoft}/>
    <TextInput style={s.input} value={phone} onChangeText={setPhone} placeholder="Phone" placeholderTextColor={C.mutedSoft} keyboardType="phone-pad"/>
+   <View style={s.addressHead}><MapPin size={16} color={C.gold}/><Text style={s.addressText}>Saved profile location</Text></View>
+   <TextInput style={s.input} value={city} onChangeText={setCity} placeholder="City" placeholderTextColor={C.mutedSoft}/>
+   <TextInput style={s.input} value={state} onChangeText={setState} placeholder="State" placeholderTextColor={C.mutedSoft}/>
+   <TextInput style={s.input} value={pincode} onChangeText={setPincode} placeholder="Pincode" placeholderTextColor={C.mutedSoft} keyboardType="numeric"/>
 
    {message?<Text style={[s.message,message==="Profile updated."&&s.success]}>{message}</Text>:null}
 
@@ -153,5 +167,7 @@ const s=StyleSheet.create({
  save:{height:52,borderRadius:16,backgroundColor:C.gold,flexDirection:"row",alignItems:"center",justifyContent:"center",gap:8},
  saveText:{color:C.midnight,fontSize:12,fontWeight:"900"},
  logout:{height:52,borderRadius:16,borderWidth:1,borderColor:C.dangerBorder,backgroundColor:C.royalNavy,flexDirection:"row",alignItems:"center",justifyContent:"center",gap:8,marginTop:11},
+ addressHead:{flexDirection:"row",alignItems:"center",gap:8,marginBottom:9},
+ addressText:{color:C.goldLight,fontSize:10,fontWeight:"800"},
  logoutText:{color:C.danger,fontSize:12,fontWeight:"900"},
 });

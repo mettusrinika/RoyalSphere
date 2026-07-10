@@ -136,6 +136,46 @@ export const endpoints = {
     api.patch(`/vendor-applications/${id}/approve`),
   adminRejectVendor: (id: string, data: { reason: string }) =>
     api.patch(`/vendor-applications/${id}/reject`, data),
+
+  myReviews: () => api.get("/reviews/my"),
+  updateReview: (id:string,d:any) => api.patch(`/reviews/${id}`, d),
+  deleteReview: (id:string) => api.delete(`/reviews/${id}`),
+  vendorReviews: (vendorId:string,page=1,limit=20) => api.get(`/reviews/vendor/${vendorId}`, {params:{page,limit}}),
+  replyReview: (id:string,reply:string) => api.patch(`/reviews/${id}/reply`, {reply}),
+  moderateReview: (id:string,d:any) => api.patch(`/reviews/${id}/moderate`, d),
+
+  adminUsers: (params:any={}) => api.get("/users", {params}),
+  adminUser: (id:string) => api.get(`/users/${id}`),
+  adminUserStatus: (id:string,status:string) => api.patch(`/users/${id}/status`, {status}),
+  adminServices: (page=1,limit=50) => api.get("/services/admin/all", {params:{page,limit}}),
+  adminPendingServices: (page=1,limit=50) => api.get("/services/admin/pending", {params:{page,limit}}),
+  adminApproveService: (id:string) => api.patch(`/services/${id}/approve`),
+  adminRejectService: (id:string,reason:string) => api.patch(`/services/${id}/reject`, {reason}),
+  adminPaymentList: () => api.get("/payments/admin/all"),
+  adminRefund: (id:string,reason:string) => api.post(`/payments/refund/${id}`, {reason}),
+  createCategory: (d:any) => api.post("/categories", d),
+  updateCategory: (id:string,d:any) => api.put(`/categories/${id}`, d),
+  deleteCategory: (id:string) => api.delete(`/categories/${id}`),
+  seedCategories: () => api.post("/categories/seed"),
+  adminRevenueChart: () => api.get("/analytics/admin/revenue-chart"),
+  adminUserGrowth: () => api.get("/analytics/admin/user-growth"),
+  adminTopCategories: () => api.get("/analytics/admin/top-categories"),
+  adminTopVendors: () => api.get("/analytics/admin/top-vendors"),
+  adminBookingDistribution: () => api.get("/analytics/admin/booking-distribution"),
+
+  createService: (d:any) => api.post("/services", d),
+  updateService: (id:string,d:any) => api.put(`/services/${id}`, d),
+  deleteService: (id:string) => api.delete(`/services/${id}`),
+  vendorBookings: () => api.get("/bookings/my"),
+  updateBookingStatus: (id:string,status:string) => api.patch(`/bookings/${id}/status`, {status}),
+  vendorRevenueChart: () => api.get("/analytics/vendor/revenue-chart"),
+  vendorServicePerformance: () => api.get("/analytics/vendor/service-performance"),
+
+  unreadMessages: () => api.get("/messages/unread-count"),
+  markConversationRead: (id:string) => api.patch(`/messages/read/${id}`),
+  archiveConversation: (id:string) => api.patch(`/messages/archive/${id}`),
+  unarchiveConversation: (id:string) => api.patch(`/messages/unarchive/${id}`),
+  searchMessages: (id:string,q:string) => api.get(`/messages/search/${id}`, {params:{q}}),
 };
 
 export const errMsg = (e:any) => {

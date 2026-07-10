@@ -80,6 +80,15 @@ export class ReviewsController {
     );
   }
 
+  @Get('my')
+  @Roles('customer')
+  @ApiBearerAuth()
+  getMyReviews(@Request() req) {
+    return this.reviewsService.getMyReviews(
+      req.user._id.toString(),
+    );
+  }
+
   @Public()
   @Get('service/:serviceId')
   getServiceReviews(
