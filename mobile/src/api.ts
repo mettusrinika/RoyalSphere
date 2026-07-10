@@ -115,6 +115,9 @@ export const endpoints = {
   customerOverview: () => api.get("/analytics/customer/overview"),
   adminOverview: () => api.get("/analytics/admin/overview"),
   adminVendorApplications: () => api.get("/vendor-applications"),
+  adminVendorApplication: (id:string) => api.get(`/vendor-applications/${id}`),
+  adminVerifyVendorDocument: (id:string,type:string,d:any) => api.patch(`/vendor-applications/${id}/documents/${type}/verify`, d),
+  adminCategories: () => api.get("/categories", {params:{all:"true"}}),
   adminBookings: () => api.get("/bookings/admin/all"),
   vendorOverview: () => api.get("/analytics/vendor/overview"),
   myServices: () => api.get("/services/my-services"),
@@ -170,6 +173,7 @@ export const endpoints = {
   updateBookingStatus: (id:string,status:string) => api.patch(`/bookings/${id}/status`, {status}),
   vendorRevenueChart: () => api.get("/analytics/vendor/revenue-chart"),
   vendorServicePerformance: () => api.get("/analytics/vendor/service-performance"),
+  vendorReviewAnalytics: (vendorId:string) => api.get(`/reviews/analytics/vendor/${vendorId}`),
 
   unreadMessages: () => api.get("/messages/unread-count"),
   markConversationRead: (id:string) => api.patch(`/messages/read/${id}`),
@@ -179,9 +183,11 @@ export const endpoints = {
 };
 
 export const errMsg = (e:any) => {
-  const m = e?.response?.data?.message;
-  if (Array.isArray(m)) return m[0];
-  if (typeof m === "string") return m;
-  if (!e?.response) return "Unable to connect to OMIQORA. Check your connection and try again.";
-  return e?.message ?? "Something went wrong";
+  const status = Number(e?.response?.status ?? 0);
+  if (!e?.response) return "We couldn't reach OMIQORA right now. Please check your connection and retry.";
+  if (status === 401) return "Your session has expired. Please sign in again.";
+  if (status === 403) return "This action is not available for your account.";
+  if (status === 404) return "We couldn't find that information. Pull to refresh and try again.";
+  if (status >= 500) return "OMIQORA is temporarily unavailable. Please retry in a moment.";
+  return "We couldn't complete that action. Check the details and try again.";
 };

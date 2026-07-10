@@ -1,3 +1,3 @@
-﻿import axios from "axios";
+import axios from "axios";
 export const api=axios.create({baseURL:"https://royalsphere-api.onrender.com/api/v1",timeout:30000});
-export const apiError=(e:any)=>{const m=e?.response?.data?.message;return Array.isArray(m)?m.join("\n"):m||(!e?.response?"Unable to connect to OMIQORA.":"Something went wrong.");};
+export const apiError=(e:any)=>{const status=Number(e?.response?.status??0);if(!e?.response)return "We couldn't reach OMIQORA right now. Please check your connection and retry.";if(status===401)return "Your session has expired. Please sign in again.";if(status===403)return "This action is not available for your account.";if(status>=500)return "OMIQORA is temporarily unavailable. Please retry in a moment.";return "We couldn't complete that action. Check the details and try again.";};
