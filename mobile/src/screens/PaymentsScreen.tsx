@@ -1,4 +1,4 @@
-﻿import React, {
+import React, {
   useCallback,
   useEffect,
   useState,
@@ -123,7 +123,7 @@ export function PaymentsScreen({
           </Text>
 
           <Text style={styles.head}>
-            Payment history
+            Wallet & payment activity
           </Text>
 
           <Text style={styles.lead}>

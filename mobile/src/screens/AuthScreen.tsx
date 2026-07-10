@@ -1,6 +1,6 @@
-﻿import React,{useRef,useState} from "react";
+import React,{useRef,useState} from "react";
 import {
- ActivityIndicator,Alert,Keyboard,KeyboardAvoidingView,Platform,Pressable,ScrollView,
+ ActivityIndicator,Alert,Image,Keyboard,KeyboardAvoidingView,Platform,Pressable,ScrollView,
  StyleSheet,Text,TextInput,View,
 } from "react-native";
 import {LinearGradient} from "expo-linear-gradient";
@@ -93,7 +93,17 @@ export function AuthScreen(){
 
    try{
     if(!otpSent){
-     const result=await requestPhoneOtp(phone);
+     const otpStartedAt=Date.now();
+     const result=await Promise.race([
+      requestPhoneOtp(phone),
+      new Promise<never>((_,reject)=>setTimeout(
+       ()=>reject(new Error("OTP request timed out. Check your network and try again.")),
+       30000,
+      )),
+     ]);
+     console.info("OMIQORA OTP request completed",{
+      durationMs:Date.now()-otpStartedAt,
+     });
      setOtpSent(true);
 
      setTimeout(()=>{
@@ -220,10 +230,7 @@ export function AuthScreen(){
       style={styles.dismissArea}
       onPress={Keyboard.dismiss}
      >
-      <View style={styles.logoMark}>
-       <Text style={styles.q}>Q</Text>
-       <Text style={styles.infinity}>∞</Text>
-      </View>
+      <View style={styles.logoMark}><Image source={require("../../assets/omiqora-icon.png")} style={styles.logoImage} resizeMode="contain"/></View>
 
       <Text style={styles.brand}>OMIQORA</Text>
 
@@ -492,6 +499,7 @@ const styles=StyleSheet.create({
  dismissArea:{
   alignItems:"center",
  },
+ logoImage:{width:"100%",height:"100%"},
  logoMark:{
   width:68,
   height:68,

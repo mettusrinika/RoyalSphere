@@ -131,6 +131,11 @@ export const endpoints = {
   aiSupport: (message:string) => api.post("/ai/support-ai", {message}),
   budget: (d:any) => api.post("/ai/budget-planner", d),
   aiRecommendations: () => api.get("/ai/recommendations/services?limit=8"),
+  adminPayments: () => api.get("/payments"),
+  adminApproveVendor: (id: string) =>
+    api.patch(`/vendor-applications/${id}/approve`),
+  adminRejectVendor: (id: string, data: { reason: string }) =>
+    api.patch(`/vendor-applications/${id}/reject`, data),
 };
 
 export const errMsg = (e:any) => {
