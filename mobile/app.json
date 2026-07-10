@@ -8,17 +8,19 @@
                  "userInterfaceStyle":  "dark",
                  "icon":  "./assets/omiqora-icon.png",
                  "plugins":  [
-                                 [
-                                     "expo-splash-screen",
-                                     {
-                                         "backgroundColor":  "#01030F",
-                                         "image":  "./assets/omiqora-icon.png",
-                                         "imageWidth":  220,
-                                         "resizeMode":  "contain"
-                                     }
-                                 ],
-                                 "@react-native-community/datetimepicker",
-                                 "expo-router"
+                                 {
+                                     "value":  [
+                                                   "expo-splash-screen",
+                                                   {
+                                                       "backgroundColor":  "#01030F",
+                                                       "image":  "./assets/omiqora-icon.png",
+                                                       "imageWidth":  220,
+                                                       "resizeMode":  "contain"
+                                                   }
+                                               ],
+                                     "Count":  2
+                                 },
+                                 "@react-native-community/datetimepicker"
                              ],
                  "ios":  {
                              "supportsTablet":  true,
@@ -36,9 +38,6 @@
                              "favicon":  "./assets/omiqora-icon.png"
                          },
                  "extra":  {
-                               "router":  {
-
-                                          },
                                "eas":  {
                                            "projectId":  "ee32a5cf-b1f6-4bd5-9da9-bf3696e03e61"
                                        }
