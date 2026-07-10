@@ -1,4 +1,4 @@
-﻿{
+{
     "expo":  {
                  "name":  "OMIQORA",
                  "slug":  "omiqora",
@@ -8,18 +8,15 @@
                  "userInterfaceStyle":  "dark",
                  "icon":  "./assets/omiqora-icon.png",
                  "plugins":  [
-                                 {
-                                     "value":  [
-                                                   "expo-splash-screen",
-                                                   {
-                                                       "backgroundColor":  "#01030F",
-                                                       "image":  "./assets/omiqora-icon.png",
-                                                       "imageWidth":  220,
-                                                       "resizeMode":  "contain"
-                                                   }
-                                               ],
-                                     "Count":  2
-                                 },
+                                 [
+                                     "expo-splash-screen",
+                                     {
+                                         "backgroundColor":  "#01030F",
+                                         "image":  "./assets/omiqora-icon.png",
+                                         "imageWidth":  220,
+                                         "resizeMode":  "contain"
+                                     }
+                                 ],
                                  "@react-native-community/datetimepicker"
                              ],
                  "ios":  {
