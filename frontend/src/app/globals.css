@@ -222,7 +222,7 @@
 }
 
 .text-royal-blue {
-  color: var(--rs-white);
+  color: #0B1F5B;
 }
 
 .text-royal-navy {
@@ -239,19 +239,10 @@
 }
 
 .text-muted {
-  color: var(--rs-muted);
+  color: #64748B;
 }
 
-/* Light surfaces */
 
-.bg-white,
-.bg-gold-50,
-.bg-gold-100,
-.bg-royal-50,
-.bg-royal-100,
-.bg-royal-200 {
-  color: #020817;
-}
 
 .bg-white h1,
 .bg-white h2,
@@ -554,34 +545,20 @@ nav {
 
 /* Legacy white application surfaces */
 
-.bg-white {
-  background:
-    linear-gradient(
-      145deg,
-      rgba(11, 27, 52, 0.92),
-      rgba(6, 18, 38, 0.88)
-    ) !important;
-
-  color: var(--rs-white) !important;
-
-  border-color: rgba(201, 162, 39, 0.18);
-}
 
 /* Old pale Royal backgrounds */
 
 .bg-royal-50,
 .bg-royal-100,
 .bg-royal-200 {
-  background: rgba(11, 27, 52, 0.72) !important;
-  color: var(--rs-white) !important;
+  background: rgba(11,27,52,.72) !important;
 }
 
 /* Old pale gold backgrounds */
 
 .bg-gold-50,
 .bg-gold-100 {
-  background: rgba(201, 162, 39, 0.08) !important;
-  color: var(--rs-gold-light) !important;
+  background: rgba(201,162,39,.08) !important;
 }
 
 /* Restore readable typography inside converted surfaces */
@@ -601,37 +578,13 @@ nav {
   color: inherit;
 }
 
-.bg-royal-50 h1,
-.bg-royal-50 h2,
-.bg-royal-50 h3,
-.bg-royal-100 h1,
-.bg-royal-100 h2,
-.bg-royal-100 h3,
-.bg-royal-200 h1,
-.bg-royal-200 h2,
-.bg-royal-200 h3 {
-  color: var(--rs-white);
-}
+
 
 /* Explicit old dark text repair */
 
-.text-gray-900,
-.text-slate-900,
-.text-black {
-  color: var(--rs-white) !important;
-}
 
-.text-gray-800,
-.text-slate-800 {
-  color: var(--rs-soft) !important;
-}
 
-.text-gray-700,
-.text-slate-700,
-.text-gray-600,
-.text-slate-600 {
-  color: var(--rs-muted) !important;
-}
+
 
 /* Soft legacy borders */
 
@@ -820,18 +773,7 @@ tbody tr:hover td {
   background: transparent !important;
 }
 
-tbody tr:hover .text-gray-900,
-tbody tr:hover .text-slate-900,
-tbody tr:hover .text-black {
-  color: var(--rs-white) !important;
-}
 
-tbody tr:hover .text-gray-500,
-tbody tr:hover .text-gray-600,
-tbody tr:hover .text-slate-500,
-tbody tr:hover .text-slate-600 {
-  color: var(--rs-muted) !important;
-}
 
 /* Catch direct TD white hover utilities */
 
@@ -922,6 +864,6 @@ td.hover\:bg-gray-100:hover {
 .hover\:text-gray-900:hover,
 .hover\:text-slate-900:hover,
 .hover\:text-black:hover {
-  color: var(--rs-white) !important;
+  color: #0B1F5B !important;
 }
 

@@ -7,9 +7,12 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(amount: number, currency = 'INR') {
-  return new Intl.NumberFormat('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }).format(amount);
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency,
+    maximumFractionDigits: 0,
+  }).format(amount);
 }
-
 
 export function formatDate(date?: string | Date | null) {
   if (!date) return '-';
@@ -22,7 +25,9 @@ export function formatDate(date?: string | Date | null) {
 }
 
 export function timeAgo(date: string | Date) {
-  return formatDistanceToNow(new Date(date), { addSuffix: true });
+  return formatDistanceToNow(new Date(date), {
+    addSuffix: true,
+  });
 }
 
 export function getInitials(firstName: string, lastName: string) {
@@ -48,7 +53,8 @@ export function getStatusColor(status: string): string {
     approved: 'bg-green-100 text-green-800',
     under_review: 'bg-blue-100 text-blue-800',
   };
-  return map[status] || 'bg-gray-100 text-gray-800';
+
+  return map[status] ?? 'bg-gray-100 text-gray-800';
 }
 
 export function getStatusLabel(status: string): string {
@@ -59,19 +65,40 @@ export function getStatusLabel(status: string): string {
     completed: 'Completed',
     cancelled: 'Cancelled',
     rejected: 'Rejected',
+    approved: 'Approved',
+    active: 'Active',
+    inactive: 'Inactive',
+    paid: 'Paid',
+    failed: 'Failed',
     under_review: 'Under Review',
   };
-  return map[status] || status;
+
+  return map[status] ?? status;
 }
 
-export function buildQueryString(params: Record<string, any>): string {
-  const clean = Object.entries(params).filter(([, v]) => v !== undefined && v !== '' && v !== null);
-  return new URLSearchParams(Object.fromEntries(clean)).toString();
+export function buildQueryString(
+  params: Record<string, unknown>
+): string {
+  const clean = Object.entries(params).filter(
+    ([, value]) =>
+      value !== undefined &&
+      value !== null &&
+      value !== ''
+  );
+
+  return new URLSearchParams(
+    Object.fromEntries(clean) as Record<string, string>
+  ).toString();
 }
 
-export function getRatingStars(rating: number): { full: number; half: boolean; empty: number } {
+export function getRatingStars(rating: number) {
   const full = Math.floor(rating);
   const half = rating % 1 >= 0.5;
   const empty = 5 - full - (half ? 1 : 0);
-  return { full, half, empty };
+
+  return {
+    full,
+    half,
+    empty,
+  };
 }

@@ -6,8 +6,11 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { aiApi } from '@/lib/api';
 import { Search, Sparkles, WalletCards, Users, Gauge, MessageSquareText, TrendingUp, Activity, ShieldAlert, ScanText, BarChart3, Bot, Send, Cpu } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-const groups = [
+type Feature = [string, string, LucideIcon];
+
+const groups: { title: string; items: Feature[] }[] = [
   { title: 'For Customers', items: [
     ['Smart Vendor Matching', 'Weighted discovery using category, location, budget, rating and trust signals.', Users],
     ['Personalized Recommendations', 'Recommendations shaped by customer and platform signals.', Sparkles],
@@ -64,13 +67,25 @@ export default function AIAdvantagePage() {
             <section key={group.title} className="mt-12">
               <h2 className="royal-gold-text text-2xl font-bold mb-5">{group.title}</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-                {group.items.map(([name, description, Icon]: any) => (
-                  <article key={name} className="card royal-ai-card">
-                    <Icon className="text-royal-bright mb-4 royal-icon-glow" size={29} />
-                    <h3 className="font-bold text-lg text-white">{name}</h3>
-                    <p className="text-muted text-sm mt-2 leading-6">{description}</p>
-                  </article>
-                ))}
+                
+  {group.items.map(([name, description, Icon]: Feature) => (
+  <article key={name} className="card royal-ai-card">
+    <Icon
+      className="text-royal-bright mb-4 royal-icon-glow"
+      size={29}
+    />
+
+    <h3 className="font-bold text-lg text-white">
+      {name}
+    </h3>
+
+    <p className="text-muted text-sm mt-2 leading-6">
+      {description}
+    </p>
+  </article>
+))}
+
+      
               </div>
             </section>
           ))}
@@ -78,10 +93,15 @@ export default function AIAdvantagePage() {
           <section className="mt-12 royal-ai-card p-6 md:p-8">
             <div className="flex items-center gap-3 mb-4"><Bot className="text-royal-bright royal-icon-glow"/><h2 className="royal-gold-text text-2xl font-bold">OMIQORA AI Support</h2></div>
             <div className="flex flex-col md:flex-row gap-3">
-              <input className="input flex-1" value={message} onChange={e => setMessage(e.target.value)} onKeyDown={e => e.key === 'Enter' && ask()} placeholder="Ask about services, bookings, payments or becoming a vendor..." />
+              <input
+  className="input flex-1 text-white placeholder:text-slate-400" value={message} onChange={e => setMessage(e.target.value)} onKeyDown={e => e.key === 'Enter' && ask()} placeholder="Ask about services, bookings, payments or becoming a vendor..." />
               <button className="btn-gold royal-shimmer flex items-center justify-center gap-2" onClick={ask} disabled={loading}>{loading ? 'Thinking...' : <>Ask AI <Send size={17}/></>}</button>
             </div>
-            {answer && <div className="mt-5 rounded-2xl border border-royal-gold/30 bg-[#000B1F]/70 p-5 text-white leading-7">{answer}</div>}
+            {answer && (
+  <div className="mt-5 rounded-2xl border border-royal-gold/30 bg-[#000B1F] p-5 text-white leading-7 break-words whitespace-pre-wrap">
+    {answer}
+  </div>
+)}
           </section>
         </section>
       </main>
