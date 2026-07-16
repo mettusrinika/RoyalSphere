@@ -84,7 +84,7 @@ export default function LoginPage() {
             <form onSubmit={(event)=>{event.preventDefault();login({email,password})}} className="space-y-5">
               <div><label className="label">Email Address</label><input value={email} onChange={e=>setEmail(e.target.value)} type="email" required placeholder="you@example.com" autoComplete="email" className="input" /></div>
               <div><label className="label">Password</label><div className="relative"><input value={password} onChange={e=>setPassword(e.target.value)} type={showPassword?'text':'password'} required placeholder="••••••••" autoComplete="current-password" className="input pr-11" /><button type="button" onClick={()=>setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted">{showPassword?<EyeOff size={16}/>:<Eye size={16}/>}</button></div></div>
-              <div className="flex items-center justify-end"><Link href="/auth/forgot-password" className="text-sm text-royal-blue hover:underline">Forgot password?</Link></div>
+              <div className="flex items-center justify-end"><Link href="/auth/forgot-password" className="text-sm text-royal-gold hover:text-yellow-300 hover:underline">Forgot password?</Link></div>
               <button type="submit" disabled={isPending||!email||!password} className="btn-primary w-full py-3 rounded-xl disabled:opacity-50">{isPending?'Signing you in...':'Sign In'}</button>
             </form>
           ) : (
@@ -95,7 +95,17 @@ export default function LoginPage() {
               {otpRequested?<button type="button" onClick={requestOtp} disabled={phoneBusy} className="w-full text-sm text-royal-blue hover:underline">Resend OTP</button>:null}
             </div>
           )}
-          <div className="mt-6 border-t border-border pt-5"><p className="text-center text-sm text-muted">Don&apos;t have an account? <Link href="/auth/register" className="text-royal-blue font-medium hover:underline">Create one</Link></p></div>
+          <div className="mt-6 border-t border-border pt-5">
+  <p className="text-center text-sm text-gray-300">
+    Don&apos;t have an account?{" "}
+    <Link
+      href="/auth/register"
+      className="font-medium text-royal-gold hover:text-yellow-300 hover:underline"
+    >
+      Create one
+    </Link>
+  </p>
+</div>
         </div>
       </div>
     </div>

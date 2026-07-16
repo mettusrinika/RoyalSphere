@@ -136,7 +136,7 @@ const vendorApproved = user?.isVendorApproved;
 
       <div>
 
-        <h3 className="text-xl font-bold text-royal-blue flex items-center gap-2">
+        <h3 className="text-xl font-bold text-royal-gold flex items-center gap-2">
           <Store size={22} />
           Become a Vendor
         </h3>
@@ -238,7 +238,9 @@ Vendor Dashboard
 
       {/* Quick actions */}
       <div className="mt-6 card">
-        <h3 className="font-semibold text-royal-blue mb-4">Quick Actions</h3>
+       <h3 className="font-semibold text-royal-gold mb-4">
+  Quick Actions
+</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: 'Browse Services', href: '/services', icon: <Search size={20} />, color: 'bg-royal-50 text-royal-blue' },
