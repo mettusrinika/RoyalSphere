@@ -93,11 +93,14 @@ async function sendMessageToAI(message: string): Promise<string> {
   try {
     const response = await aiApi.supportAI(message);
 
+    console.log("OMI AI Response:", response.data);
+
     return (
+      response.data?.data?.answer ||
+      response.data?.data?.response ||
+      response.data?.data?.message ||
+      response.data?.data?.content ||
       response.data?.answer ||
-      response.data?.response ||
-      response.data?.message ||
-      response.data?.content ||
       "OMI received your request."
     );
   } catch (error: any) {
