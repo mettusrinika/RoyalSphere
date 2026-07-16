@@ -91,17 +91,22 @@ function saveHistory(messages: ChatMessage[]): void {
  */
 async function sendMessageToAI(message: string): Promise<string> {
   try {
-    const data: any = unwrap(await endpoints.aiSupport(message));
+    const response = await aiApi.supportAI(message);
 
     return (
-      data?.response ??
-      data?.answer ??
-      data?.message ??
-      data?.content ??
+      response.data?.answer ||
+      response.data?.response ||
+      response.data?.message ||
+      response.data?.content ||
       "OMI received your request."
     );
-  } catch (error) {
-    return errMsg(error);
+  } catch (error: any) {
+    console.error("OMI AI Error:", error);
+
+    return (
+      error?.response?.data?.message ||
+      "Sorry, something went wrong while reaching OMI. Please try again in a moment."
+    );
   }
 }
 
